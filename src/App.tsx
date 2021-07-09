@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css'
 import {Todolist} from './Todolist';
 
@@ -13,32 +13,49 @@ export type TaskType = {
     title: string
 }
 
+export type filterTask = 'All' | 'Active' | 'Completed'
+
 export function App() {
 
-    const todolist1: TodolistType[] = [
-        {id: 1, title: 'What to learn'}
-    ]
 
-    const tasks1: TaskType[] = [
+    let [filter, setFilter] = useState<filterTask>('All')
+    let [tasks, setTasks] = useState<TaskType[]>([
         {id: 1, isDone: true, title: 'HTML&CSS'},
         {id: 2, isDone: false, title: 'React'},
         {id: 3, isDone: false, title: 'Redux'},
-    ]
+    ])
 
-    const todolist2: TodolistType[] = [
-        {id: 1, title: 'What to buy'}
-    ]
+    let copyTasks = tasks
+    if (filter === 'Active') {
+        copyTasks = tasks.filter( f => !f.isDone)
+    }
 
-    const tasks2: TaskType[] = [
-        {id: 1, isDone: true, title: 'Meat'},
-        {id: 2, isDone: false, title: 'Bread'},
-        {id: 3, isDone: false, title: 'Milk'},
+    if (filter === 'Completed') {
+        copyTasks = tasks.filter( f => f.isDone)
+    }
+    console.log(tasks)
+    console.log(copyTasks)
+
+    const addTask = () => {
+        const newTask: TaskType = {
+            id: 4,
+            isDone: false,
+            title: 'addSomeTask',
+        }
+        setTasks([...tasks, newTask])
+    }
+
+    const todolist: TodolistType[] = [
+        {id: 1, title: 'What to learn'}
     ]
 
     return (
         <div className='App'>
-            <Todolist todolist={todolist1} tasks={tasks1}/>
-            <Todolist todolist={todolist2} tasks={tasks2}/>
+            <Todolist
+                title={todolist[0].title}
+                tasks={copyTasks}
+                setFilter={setFilter}
+                addTask={addTask}/>
         </div>
     )
 }
