@@ -15,7 +15,6 @@ export type TaskType = {
 export type filterTask = 'All' | 'Active' | 'Completed'
 
 
-
 export function App() {
 
     let [filter, setFilter] = useState<filterTask>('All')
@@ -26,14 +25,14 @@ export function App() {
     ])
 
 
-        let copyTasks = tasks
-        if (filter === 'Active') {
-            copyTasks = tasks.filter( f => !f.isDone)
-        }
+    let copyTasks = tasks
+    if (filter === 'Active') {
+        copyTasks = tasks.filter(f => !f.isDone)
+    }
 
-        if (filter === 'Completed') {
-            copyTasks = tasks.filter( f => f.isDone)
-        }
+    if (filter === 'Completed') {
+        copyTasks = tasks.filter(f => f.isDone)
+    }
 
 
     const addTask = (title: string) => {
@@ -45,8 +44,13 @@ export function App() {
         setTasks([...tasks, newTask])
     }
     const removeTask = (taskId: string) => {
-        const filteredTasks = tasks.filter( t => t.id !== taskId)
+        const filteredTasks = tasks.filter(t => t.id !== taskId)
         setTasks(filteredTasks)
+    }
+
+    const changeStatus = (taskId: string, isDone: boolean) => {
+        const newTasks = tasks.map( t => t.id === taskId ? {...t, isDone: isDone} : t)
+        setTasks(newTasks)
     }
 
 
@@ -60,8 +64,9 @@ export function App() {
                 title={todolist[0].title}
                 tasks={copyTasks}
                 setFilter={setFilter}
+                filter={filter}
                 removeTask={removeTask}
-
+                changeStatus={changeStatus}
                 addTask={addTask}/>
         </div>
     )
