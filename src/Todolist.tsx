@@ -1,29 +1,31 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
-import {filterTask, TaskType} from './App';
+import {FilterTask, TaskType} from './App';
 
 type TodolistPropsType = {
+    todolistId: string
     title: string
     tasks: TaskType[]
-    filter: filterTask
-    addTask: (title: string) => void
-    removeTask: (taskId: string) => void
-    setFilter: (filter: filterTask) => void
-    changeStatus: (taskId: string, isDone: boolean) => void
+    filter: FilterTask
+    addTask: (title: string, todolistId: string) => void
+    removeTask: (taskId: string, todolistId: string) => void
+    changeStatus: (taskId: string, isDone: boolean, todolistId: string) => void
+    changeFilter: (filter: FilterTask, todolistId: string) => void
 }
 
 
 export function Todolist(props: TodolistPropsType) {
+    console.log('Todolist rendering')
 
     let [title, setTitle] = useState<string>('')
     let [error, setError] = useState<boolean>(false)
 
     const JSXTasks = props.tasks.map(t => {
         const removeTask = () => {
-            props.removeTask(t.id)
+            props.removeTask(t.id, props.todolistId)
         }
 
         const changeStatus = (e: ChangeEvent<HTMLInputElement>) => {
-            props.changeStatus(t.id, e.currentTarget.checked)
+            props.changeStatus(t.id, e.currentTarget.checked, props.todolistId)
         }
         return (
             <li
@@ -41,7 +43,7 @@ export function Todolist(props: TodolistPropsType) {
 
     const addTask = () => {
         if (title.trim()) {
-            props.addTask(title)
+            props.addTask(title, props.todolistId)
             setTitle('')
         } else {
             setError(true)
@@ -61,15 +63,15 @@ export function Todolist(props: TodolistPropsType) {
 
 
     const onAllClickHandler = () => {
-        props.setFilter('All')
+        props.changeFilter('All', props.todolistId)
     }
 
     const onActiveClickHandler = () => {
-        props.setFilter('Active')
+        props.changeFilter('Active', props.todolistId)
     }
 
     const onComplitedClickHandler = () => {
-        props.setFilter('Completed')
+        props.changeFilter('Completed', props.todolistId)
     }
 
     return (
