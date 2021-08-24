@@ -62,9 +62,13 @@ export function App() {
         setTasks({...tasks, [todolistId]: newTasks})
     }
 
-    let changeFilter = (filter: FilterTask, todolistId: string) => {
-        let newTodolists = todolists.map(tl => tl.id === todolistId ? {...tl, filter: filter} : tl)
-        setTodolists(newTodolists)
+    const changeTaskTitle = (title: string, todolistId: string, taskId: string) => {
+        setTasks({
+            ...tasks, [todolistId]: [...tasks[todolistId].map(t => t.id === taskId
+                ? {...t, title: title}
+                : t)
+            ]
+        })
     }
 
     const addNewTodolist = (title: string) => {
@@ -83,13 +87,9 @@ export function App() {
         setTasks(copyTasks)
     }
 
-    const changeTaskTitle = (title: string, todolistId: string, taskId: string) => {
-        setTasks({
-            ...tasks, [todolistId]: [...tasks[todolistId].map(t => t.id === taskId
-                ? {...t, title: title}
-                : t)
-            ]
-        })
+    let changeTodolistFilter = (filter: FilterTask, todolistId: string) => {
+        let newTodolists = todolists.map(tl => tl.id === todolistId ? {...tl, filter: filter} : tl)
+        setTodolists(newTodolists)
     }
 
     const changeTodolistTitle = (title: string, todolistId: string) => {
@@ -126,7 +126,7 @@ export function App() {
                         changeTodolistTitle={changeTodolistTitle}
                         removeTask={removeTask}
                         changeStatus={changeStatus}
-                        changeFilter={changeFilter}
+                        changeTodolistFilter={changeTodolistFilter}
                         addTask={addTask}/>
                 )
             })}
