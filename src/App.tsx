@@ -7,14 +7,14 @@ import {AddItemForm} from './AddItemForm';
 export type TodolistType = {
     id: string
     title: string
-    filter: FilterTask
+    filter: FilterType
 }
 export type TaskType = {
     id: string
     isDone: boolean
     title: string
 }
-export type FilterTask = 'All' | 'Active' | 'Completed'
+export type FilterType = 'All' | 'Active' | 'Completed'
 
 
 export function App() {
@@ -87,7 +87,7 @@ export function App() {
         setTasks(copyTasks)
     }
 
-    let changeTodolistFilter = (filter: FilterTask, todolistId: string) => {
+    let changeTodolistFilter = (filter: FilterType, todolistId: string) => {
         let newTodolists = todolists.map(tl => tl.id === todolistId ? {...tl, filter: filter} : tl)
         setTodolists(newTodolists)
     }
@@ -97,8 +97,6 @@ export function App() {
             ? {...t, title: title}
             : t))
     }
-
-    console.log(tasks)
 
     return (
         <div className='App'>

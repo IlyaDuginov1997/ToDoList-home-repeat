@@ -1,5 +1,5 @@
 import React, {ChangeEvent} from 'react';
-import {FilterTask, TaskType} from './App';
+import {FilterType, TaskType} from './App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 
@@ -7,11 +7,11 @@ type TodolistPropsType = {
     todolistId: string
     title: string
     tasks: TaskType[]
-    filter: FilterTask
+    filter: FilterType
     addTask: (title: string, todolistId: string) => void
     removeTask: (taskId: string, todolistId: string) => void
     changeStatus: (taskId: string, isDone: boolean, todolistId: string) => void
-    changeTodolistFilter: (filter: FilterTask, todolistId: string) => void
+    changeTodolistFilter: (filter: FilterType, todolistId: string) => void
     changeTaskTitle: (title: string, todolistId: string, taskId: string) => void
     changeTodolistTitle: (title: string, todolistId: string) => void
     removeTodolist: (todolistId: string) => void
