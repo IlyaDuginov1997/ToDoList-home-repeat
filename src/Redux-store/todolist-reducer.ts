@@ -21,7 +21,7 @@ export type changeTitleTodolistType = {
 }
 
 export type changeFilterTodolistType = {
-    type: 'CHANGE-FILTER-TODOLIST',
+    type: 'CHANGE-TODOLIST-FILTER',
     todolistId: string,
     filter: FilterType,
 }
@@ -38,7 +38,7 @@ export const todolistReducer = (state: TodolistType[], action: allTodolistTypes)
             return state.filter((tl) => tl.id !== action.todolistId)
         case 'CHANGE-TITLE-TODOLIST':
             return state.map((tl) => tl.id === action.todolistId ? {...tl, title: action.title} : tl)
-        case 'CHANGE-FILTER-TODOLIST':
+        case 'CHANGE-TODOLIST-FILTER':
             return state.map((tl) => tl.id === action.todolistId ? {...tl, filter: action.filter} : tl)
         default:
             throw new Error('I do not now this type')
@@ -69,7 +69,7 @@ export const changeTitleTodolistTypeAC = (todolistId: string, title: string): ch
 
 export const changeFilterTodolistTypeAC = (todolistId: string, filter: FilterType): changeFilterTodolistType => {
     return {
-        type: 'CHANGE-FILTER-TODOLIST',
+        type: 'CHANGE-TODOLIST-FILTER',
         todolistId,
         filter,
     }
