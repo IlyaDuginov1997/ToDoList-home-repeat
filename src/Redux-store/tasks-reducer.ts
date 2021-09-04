@@ -36,8 +36,9 @@ export type changeTaskStatusType = {
     isDone: boolean
 }
 
+const initialState: TasksType = {}
 
-export const taskReducer = (state: TasksType, action: allTasksTypes): TasksType => {
+export const taskReducer = (state: TasksType = initialState, action: allTasksTypes): TasksType => {
     switch (action.type) {
         case 'ADD-TASK':
             const newTask: TaskType = {
@@ -86,7 +87,7 @@ export const taskReducer = (state: TasksType, action: allTasksTypes): TasksType 
             return stateCopy
 
         default:
-            throw new Error('I do not now this type')
+            return state
     }
 }
 
