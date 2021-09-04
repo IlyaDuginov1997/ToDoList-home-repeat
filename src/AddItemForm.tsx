@@ -11,7 +11,7 @@ export const AddItemForm = (props: AddItemFormPropsType) => {
 
     const addTitle = () => {
         if (title.trim()) {
-            props.addItem(title)
+            props.addItem(title.trim().replace(/\s+/g, ' '))
             setTitle('')
         } else {
             setError(true)
