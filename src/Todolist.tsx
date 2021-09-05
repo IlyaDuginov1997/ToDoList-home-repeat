@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, useCallback} from 'react';
 import {FilterType, TaskType} from './App';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
@@ -19,6 +19,7 @@ type TodolistPropsType = {
 
 
 export function Todolist(props: TodolistPropsType) {
+    console.log('Todolist is called')
 
     const JSXTasks = props.tasks.map(t => {
         const removeTask = () => {
@@ -58,9 +59,9 @@ export function Todolist(props: TodolistPropsType) {
         props.changeTodolistFilter('Completed', props.todolistId)
     }
 
-    const addTaskForTodolist = (title: string) => {
+    const addTaskForTodolist = useCallback((title: string) => {
         props.addTask(title, props.todolistId)
-    }
+    }, [])
 
     const changeTodolistTitle = (title: string) => {
         props.changeTodolistTitle(title, props.todolistId)
