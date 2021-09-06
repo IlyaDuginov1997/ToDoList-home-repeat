@@ -30,7 +30,7 @@ export type TasksType = {
 export type FilterType = 'All' | 'Active' | 'Completed'
 
 
-export function AppWithRedux() {
+export const AppWithRedux = () => {
     console.log('App is called')
 
     let todolists = useSelector<AppRootStateType, TodolistType[]>((state) => state.todolists)
@@ -39,53 +39,45 @@ export function AppWithRedux() {
 
     const addTask = useCallback((title: string, todolistId: string) => {
         dispatch(addTaskAC(title, todolistId))
-    }, [])
+    }, [dispatch])
 
     const removeTask = useCallback((taskId: string, todolistId: string) => {
         dispatch(removeTaskAC(taskId, todolistId))
-    }, [])
+    }, [dispatch])
 
     const changeStatus = useCallback((taskId: string, isDone: boolean, todolistId: string) => {
         dispatch(changeTaskStatusAC(taskId, isDone, todolistId))
 
-    }, [])
+    }, [dispatch])
 
     const changeTaskTitle = useCallback((title: string, todolistId: string, taskId: string) => {
         dispatch(changeTaskTitleAC(title, todolistId, taskId))
 
-    }, [])
+    }, [dispatch])
 
     const addNewTodolist = useCallback((title: string) => {
         const action = addTodolistAC(title)
         dispatch(action)
-    }, [])
+    }, [dispatch])
 
     const removeTodolist = useCallback((todolistId: string) => {
         dispatch(removeTodolistAC(todolistId))
-    }, [])
+    }, [dispatch])
 
     const changeTodolistFilter = useCallback((filter: FilterType, todolistId: string) => {
         dispatch(changeFilterTodolistAC(filter, todolistId))
 
-    }, [])
+    }, [dispatch])
 
     const changeTodolistTitle = useCallback((title: string, todolistId: string) => {
         dispatch(changeTitleTodolistAC(title, todolistId))
-    }, [])
+    }, [dispatch])
 
     return (
         <div className='App'>
             <AddItemForm addItem={addNewTodolist}/>
             {todolists.map(tl => {
                 let allTodolistTasks = tasks[tl.id]
-                let copyTasks = allTodolistTasks
-                if (tl.filter === 'Active') {
-                    copyTasks = allTodolistTasks.filter(f => !f.isDone)
-                }
-
-                if (tl.filter === 'Completed') {
-                    copyTasks = allTodolistTasks.filter(f => f.isDone)
-                }
 
                 return (
                     <Todolist
@@ -93,12 +85,12 @@ export function AppWithRedux() {
                         todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
-                        tasks={copyTasks}
+                        tasks={allTodolistTasks}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}
                         changeTodolistTitle={changeTodolistTitle}
                         removeTask={removeTask}
-                        changeStatus={changeStatus}
+                        changeTaskStatus={changeStatus}
                         changeTodolistFilter={changeTodolistFilter}
                         addTask={addTask}/>
                 )

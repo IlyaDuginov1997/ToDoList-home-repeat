@@ -128,7 +128,7 @@ export function App() {
                         changeTaskTitle={changeTaskTitle}
                         changeTodolistTitle={changeTodolistTitle}
                         removeTask={removeTask}
-                        changeStatus={changeStatus}
+                        changeTaskStatus={changeStatus}
                         changeTodolistFilter={changeTodolistFilter}
                         addTask={addTask}/>
                 )
