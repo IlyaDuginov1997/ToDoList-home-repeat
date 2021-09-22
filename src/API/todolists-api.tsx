@@ -9,30 +9,44 @@ const instance = axios.create({
     },
 })
 
+export type getTodolistsType = {
+    id: string
+    addedDate: string
+    order: number
+    title: string
+}
+
+export type commonTodolistType<T = {}> = {
+    resultCode: number
+    messages: string[]
+    fieldsErrors: string[]
+    data: T
+}
+
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get('todo-lists')
+        return instance.get<getTodolistsType>('todo-lists')
             .then(res => {
                 return res.data
             })
     },
 
     deleteTodolist(todolistId: string) {
-        return instance.delete(`todo-lists/${todolistId}`)
+        return instance.delete<commonTodolistType>(`todo-lists/${todolistId}`)
             .then(res => {
                 return res.data
             })
     },
 
     createTodolist(title: string) {
-        return instance.post('todo-lists/', {title})
+        return instance.post<commonTodolistType<{ item: getTodolistsType }>>('todo-lists/', {title})
             .then(res => {
                 return res.data
             })
     },
 
     updateTodolist(todolistId: string, title: string) {
-        return instance.put(`todo-lists/${todolistId}`, {title})
+        return instance.put<commonTodolistType>(`todo-lists/${todolistId}`, {title})
             .then(res => {
                 return res.data
             })

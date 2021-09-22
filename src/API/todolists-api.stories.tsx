@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {todolistsAPI} from '../../API/todolists-api';
+import {todolistsAPI} from './todolists-api';
 
 export default {
     title: 'API'
@@ -34,7 +34,7 @@ export const CreateTodolist = () => {
 
 export const DeleteTodolist = () => {
     const [state, setState] = useState<any>(null)
-    const todolistId = '58dc7031-ee39-4c68-84d1-e6606bd0708f'
+    const todolistId = 'a9059091-8969-4196-9497-ff8340a5f72f'
     useEffect(() => {
         todolistsAPI.deleteTodolist(todolistId)
             .then(res => {
@@ -48,8 +48,8 @@ export const DeleteTodolist = () => {
 
 export const UpdateTodolistTitle = () => {
     const [state, setState] = useState<any>(null)
-    const todolistId = 'a9059091-8969-4196-9497-ff8340a5f72f'
-    const todolistTitle = 'Weizen'
+    const todolistId = 'd6c31e58-4d8a-4758-bf4f-750cce3920f9'
+    const todolistTitle = 'DIPA'
 
     useEffect(() => {
         todolistsAPI.updateTodolist(todolistId, todolistTitle)
