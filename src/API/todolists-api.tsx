@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import axios from 'axios';
 
 const instance = axios.create({
@@ -7,9 +7,9 @@ const instance = axios.create({
     headers: {
         'API-KEY': 'e5b738f6-4744-4b59-9452-509c57fc296b'
     },
-})
+});
 
-export type GetTodolistsType = {
+export type TodolistType = {
     id: string
     addedDate: string
     order: number
@@ -23,18 +23,32 @@ export type CommonTodolistType<T = {}> = {
     data: T
 }
 
-export type ItemType = {
+export enum TaskStatuses {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 3,
+}
+
+export enum TaskPriorities {
+    Low = 0,
+    Middle = 1,
+    Hi = 2,
+    Urgently = 3,
+    Later = 4,
+}
+
+export type TaskType = {
     description: string
     title: string
-    status: number
-    priority: number
+    status: TaskStatuses
+    priority: TaskPriorities
     startDate: string
     deadline: string
     id: string
     todoListId: string
     order: number
     addedDate: string
-    totalCount?: number
 }
 
 export type UpdatedPropertiesType = {
@@ -46,14 +60,14 @@ export type UpdatedPropertiesType = {
     deadline: string
 }
 
-export type GetTodolistTasksType = {
-    items: ItemType[]
+export type TodolistsType = {
+    items: TaskType[]
     totalCount: number
     error: string
 }
 
 export type CreateTodolistTasksType = {
-    data: ItemType
+    data: TaskType
     resultCode: number
     messages: string[]
     fieldsErrors: string[]
@@ -61,59 +75,59 @@ export type CreateTodolistTasksType = {
 
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get<GetTodolistsType>('todo-lists')
+        return instance.get<TodolistType>('todo-lists')
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     createTodolist(title: string) {
-        return instance.post<CommonTodolistType<{ item: GetTodolistsType }>>('todo-lists/', {title})
+        return instance.post<CommonTodolistType<{ item: TodolistType }>>('todo-lists/', {title})
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     deleteTodolist(todolistId: string) {
         return instance.delete<CommonTodolistType>(`todo-lists/${todolistId}`)
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     updateTodolist(todolistId: string, title: string) {
         return instance.put<CommonTodolistType>(`todo-lists/${todolistId}`, {title})
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     getTodolistTasks(todolistId: string) {
-        return instance.get<GetTodolistTasksType>(`todo-lists/${todolistId}/tasks`)
+        return instance.get<111>(`todo-lists/${todolistId}/tasks`)
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     createTodolistTask(todolistId: string, title: string) {
         return instance.post<CreateTodolistTasksType>(`todo-lists/${todolistId}/tasks`, {title: title})
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     updateTodolistTask(todolistId: string, taskId: string, model: UpdatedPropertiesType) {
         return instance.put<CommonTodolistType>(`todo-lists/${todolistId}/tasks/${taskId}`, model)
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
 
     deleteTodolistTask(todolistId: string, taskId: string) {
         return instance.delete<CommonTodolistType>(`todo-lists/${todolistId}/tasks/${taskId}`)
             .then(res => {
-                return res.data
-            })
+                return res.data;
+            });
     },
-}
+};
 

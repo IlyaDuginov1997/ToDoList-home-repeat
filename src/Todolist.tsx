@@ -1,8 +1,9 @@
-import React, {ChangeEvent, useCallback} from 'react';
-import {FilterType, TaskType} from './App';
+import React, {useCallback} from 'react';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Task} from './Task';
+import {FilterType} from './AppWithRedux';
+import {TaskStatuses, TaskType} from './API/todolists-api';
 
 type TodolistPropsType = {
     todolistId: string
@@ -11,7 +12,7 @@ type TodolistPropsType = {
     filter: FilterType
     addTask: (title: string, todolistId: string) => void
     removeTask: (taskId: string, todolistId: string) => void
-    changeTaskStatus: (taskId: string, isDone: boolean, todolistId: string) => void
+    changeTaskStatus: (taskId: string, status: TaskStatuses, todolistId: string) => void
     changeTaskTitle: (title: string, todolistId: string, taskId: string) => void
     changeTodolistFilter: (filter: FilterType, todolistId: string) => void
     changeTodolistTitle: (title: string, todolistId: string) => void
@@ -24,11 +25,11 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
 
     let copyTasks = props.tasks
     if (props.filter === 'Active') {
-        copyTasks = props.tasks.filter(f => !f.isDone)
+        copyTasks = props.tasks.filter(f => f.status === TaskStatuses.New)
     }
 
     if (props.filter === 'Completed') {
-        copyTasks = props.tasks.filter(f => f.isDone)
+        copyTasks = props.tasks.filter(f => f.status === TaskStatuses.Completed)
     }
     const JSXTasks = copyTasks.map(t => <Task
         key={t.id}
