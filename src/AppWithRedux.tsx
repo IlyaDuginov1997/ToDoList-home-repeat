@@ -1,16 +1,18 @@
-import React, {useCallback} from 'react';
-import './App.css'
+import React, {useCallback, useEffect} from 'react';
+import './App.css';
 import {AddItemForm} from './AddItemForm';
 import {
     addTodolistAC,
     changeFilterTodolistAC,
     changeTitleTodolistAC,
-    removeTodolistAC, TodolistDomainType
+    removeTodolistAC,
+    setTodolistTC,
+    TodolistDomainType
 } from './Redux-store/todolist-reducer';
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './Redux-store/tasks-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './Redux-store/Store';
-import {TaskStatuses, TaskType, TodolistType} from './API/todolists-api';
+import {TaskStatuses, TaskType} from './API/todolists-api';
 import {Todolist} from './Todolist';
 
 export type TasksType = {
@@ -21,53 +23,59 @@ export type FilterType = 'All' | 'Active' | 'Completed'
 
 
 export const AppWithRedux = () => {
-    console.log('App is called')
+    console.log('App is called');
 
-    let todolists = useSelector<AppRootStateType, TodolistDomainType[]>((state) => state.todolists)
-    let tasks = useSelector<AppRootStateType, TasksType>((state) => state.tasks)
-    const dispatch = useDispatch()
+
+    let todolists = useSelector<AppRootStateType, TodolistDomainType[]>((state) => state.todolists);
+    let tasks = useSelector<AppRootStateType, TasksType>((state) => state.tasks);
+    const dispatch = useDispatch();
+
+
+    useEffect(() => {
+        dispatch(setTodolistTC());
+    }, []);
 
     const addTask = useCallback((title: string, todolistId: string) => {
-        dispatch(addTaskAC(title, todolistId))
-    }, [dispatch])
+        dispatch(addTaskAC(title, todolistId));
+    }, [dispatch]);
 
     const removeTask = useCallback((taskId: string, todolistId: string) => {
-        dispatch(removeTaskAC(taskId, todolistId))
-    }, [dispatch])
+        dispatch(removeTaskAC(taskId, todolistId));
+    }, [dispatch]);
 
     const changeStatus = useCallback((taskId: string, status: TaskStatuses, todolistId: string) => {
-        dispatch(changeTaskStatusAC(taskId, status, todolistId))
+        dispatch(changeTaskStatusAC(taskId, status, todolistId));
 
-    }, [dispatch])
+    }, [dispatch]);
 
     const changeTaskTitle = useCallback((title: string, todolistId: string, taskId: string) => {
-        dispatch(changeTaskTitleAC(title, todolistId, taskId))
+        dispatch(changeTaskTitleAC(title, todolistId, taskId));
 
-    }, [dispatch])
+    }, [dispatch]);
 
     const addNewTodolist = useCallback((title: string) => {
-        const action = addTodolistAC(title)
-        dispatch(action)
-    }, [dispatch])
+        const action = addTodolistAC(title);
+        dispatch(action);
+    }, [dispatch]);
 
     const removeTodolist = useCallback((todolistId: string) => {
-        dispatch(removeTodolistAC(todolistId))
-    }, [dispatch])
+        dispatch(removeTodolistAC(todolistId));
+    }, [dispatch]);
 
     const changeTodolistFilter = useCallback((filter: FilterType, todolistId: string) => {
-        dispatch(changeFilterTodolistAC(filter, todolistId))
+        dispatch(changeFilterTodolistAC(filter, todolistId));
 
-    }, [dispatch])
+    }, [dispatch]);
 
     const changeTodolistTitle = useCallback((title: string, todolistId: string) => {
-        dispatch(changeTitleTodolistAC(title, todolistId))
-    }, [dispatch])
+        dispatch(changeTitleTodolistAC(title, todolistId));
+    }, [dispatch]);
 
     return (
-        <div className='App'>
+        <div className="App">
             <AddItemForm addItem={addNewTodolist}/>
             {todolists.map(tl => {
-                let allTodolistTasks = tasks[tl.id]
+                let allTodolistTasks = tasks[tl.id];
 
                 return (
                     <Todolist
@@ -83,8 +91,8 @@ export const AppWithRedux = () => {
                         changeTaskStatus={changeStatus}
                         changeTodolistFilter={changeTodolistFilter}
                         addTask={addTask}/>
-                )
+                );
             })}
         </div>
-    )
-}
+    );
+};

@@ -1,9 +1,11 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Task} from './Task';
 import {FilterType} from './AppWithRedux';
 import {TaskStatuses, TaskType} from './API/todolists-api';
+import {useDispatch} from 'react-redux';
+import {setTaskTC} from './Redux-store/tasks-reducer';
 
 type TodolistPropsType = {
     todolistId: string
@@ -22,6 +24,11 @@ type TodolistPropsType = {
 
 export const Todolist = React.memo((props: TodolistPropsType) => {
     console.log('Todolist is called')
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(setTaskTC(props.todolistId))
+    }, [])
 
     let copyTasks = props.tasks
     if (props.filter === 'Active') {

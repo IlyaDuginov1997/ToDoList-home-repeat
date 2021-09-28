@@ -1,6 +1,5 @@
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from './tasks-reducer';
-import {v1} from 'uuid';
-import {addTodolistAC, removeTodolistAC} from './todolist-reducer';
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, setTasksAC, taskReducer} from './tasks-reducer';
+import {addTodolistAC, removeTodolistAC, setTodolistsAC, TodolistDomainType} from './todolist-reducer';
 import {TasksType} from '../AppWithRedux';
 import {TaskPriorities, TaskStatuses} from '../API/todolists-api';
 
@@ -110,3 +109,29 @@ test('property with todolistId should be deleted', () => {
     expect(keys.length).toBe(1);
     expect(endState['todolistId2']).not.toBeDefined();
 });
+
+test('tasks-array should be created with setted todolists', () => {
+        const todolistsArr: TodolistDomainType[] = [
+            {id: '1', title: 'What to learn', filter: 'All', order: 0, addedDate: '',},
+            {id: '2', title: 'What to buy', filter: 'All', order: 0, addedDate: '',}
+        ];
+
+        const endState = taskReducer({}, setTodolistsAC(todolistsArr));
+        const keys = Object.keys(endState);
+
+        expect(keys.length).toBe(2);
+        expect(endState['1']).toBeDefined();
+    }
+);
+
+test('tasks should be setted', () => {
+        const startTasksArr = {
+            ['todolistId1']: [],
+            ['todolistId2']: [],
+        };
+        const endState = taskReducer(startTasksArr, setTasksAC(startState['todolistId1'], 'todolistId1'));
+
+        expect(endState['todolistId1'].length).toBe(3);
+        expect(endState['todolistId2'].length).toBe(0);
+    }
+);

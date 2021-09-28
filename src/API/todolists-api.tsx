@@ -60,7 +60,7 @@ export type UpdatedPropertiesType = {
     deadline: string
 }
 
-export type TodolistsType = {
+export type TasksType = {
     items: TaskType[]
     totalCount: number
     error: string
@@ -75,7 +75,7 @@ export type CreateTodolistTasksType = {
 
 export const todolistsAPI = {
     getTodolists() {
-        return instance.get<TodolistType>('todo-lists')
+        return instance.get<TodolistType[]>('todo-lists')
             .then(res => {
                 return res.data;
             });
@@ -103,7 +103,7 @@ export const todolistsAPI = {
     },
 
     getTodolistTasks(todolistId: string) {
-        return instance.get<111>(`todo-lists/${todolistId}/tasks`)
+        return instance.get<TasksType>(`todo-lists/${todolistId}/tasks`)
             .then(res => {
                 return res.data;
             });
