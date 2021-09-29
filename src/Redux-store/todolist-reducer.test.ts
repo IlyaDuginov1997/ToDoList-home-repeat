@@ -25,10 +25,11 @@ beforeEach(() => {
 test('todolist will be added', () => {
     let newTodolistTitle = 'New todolist';
 
-    const endState = todolistReducer(startState, addTodolistAC(newTodolistTitle));
+    const newTodolist = {id: todolistId1, title: newTodolistTitle, order: 0, addedDate: '',}
+    const endState = todolistReducer(startState, addTodolistAC(newTodolist));
 
     expect(endState.length).toBe(3);
-    expect(endState[2].title).toBe(newTodolistTitle);
+    expect(endState[0].title).toBe(newTodolistTitle);
 });
 
 test('todolist should be removed', () => {

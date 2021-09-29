@@ -11,7 +11,7 @@ import {
     todolistReducer
 } from './Redux-store/todolist-reducer';
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from './Redux-store/tasks-reducer';
-import {TaskPriorities, TaskStatuses, TaskType} from './API/todolists-api';
+import {TaskPriorities, TaskStatuses} from './API/todolists-api';
 import {FilterType} from './AppWithRedux';
 
 
@@ -58,7 +58,10 @@ export function AppWithReducers() {
     );
 
     const addTask = (title: string, todolistId: string) => {
-        dispatchToTasks(addTaskAC(title, todolistId));
+        dispatchToTasks(addTaskAC({
+            id: '1', status: TaskStatuses.Completed, title, addedDate: '', order: 0, deadline: '',
+            description: '', priority: TaskPriorities.Hi, startDate: '', todoListId: todolistId
+        }));
     };
 
 
@@ -77,7 +80,7 @@ export function AppWithReducers() {
     };
 
     const addNewTodolist = (title: string) => {
-        const action = addTodolistAC(title);
+        const action = addTodolistAC({id: todolistId1, title, order: 0, addedDate: '',});
         dispatchToTasks(action);
         dispatchToTodolists(action);
     };

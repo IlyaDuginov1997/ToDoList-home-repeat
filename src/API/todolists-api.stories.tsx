@@ -76,8 +76,8 @@ export const GetTodolistTasks = () => {
 
 export const CreateTodolistTask = () => {
     const [state, setState] = useState<any>(null)
-    const todolistId = 'ca908554-6514-4c6b-b39b-40ee047fa8bc'
-    const taskTitle = 'Storybook'
+    const todolistId = '897fadfd-9715-48a0-bf11-5a23d83b37a8'
+    const taskTitle = 'Green Day'
     useEffect(() => {
         todolistsAPI.createTodolistTask(todolistId, taskTitle)
             .then(res => {

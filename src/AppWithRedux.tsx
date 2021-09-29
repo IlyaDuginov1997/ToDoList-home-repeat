@@ -2,18 +2,22 @@ import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {AddItemForm} from './AddItemForm';
 import {
-    addTodolistAC,
+    addTodolistTC,
     changeFilterTodolistAC,
     changeTitleTodolistAC,
-    removeTodolistAC,
+    removeTodolistTC,
     setTodolistTC,
     TodolistDomainType
 } from './Redux-store/todolist-reducer';
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC} from './Redux-store/tasks-reducer';
+import {addTaskAC, addTaskTC, changeTaskStatusAC, changeTaskTitleAC, removeTaskTC} from './Redux-store/tasks-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './Redux-store/Store';
 import {TaskStatuses, TaskType} from './API/todolists-api';
 import {Todolist} from './Todolist';
+import {AppWithReducers} from './AppWithReducers';
+
+// что бы после рефакторинга не падали там ошибки
+const AppWithReducersComponent = AppWithReducers;
 
 export type TasksType = {
     [key: string]: TaskType[]
@@ -35,12 +39,13 @@ export const AppWithRedux = () => {
         dispatch(setTodolistTC());
     }, []);
 
+
     const addTask = useCallback((title: string, todolistId: string) => {
-        dispatch(addTaskAC(title, todolistId));
+        dispatch(addTaskTC(title, todolistId));
     }, [dispatch]);
 
     const removeTask = useCallback((taskId: string, todolistId: string) => {
-        dispatch(removeTaskAC(taskId, todolistId));
+        dispatch(removeTaskTC(taskId, todolistId));
     }, [dispatch]);
 
     const changeStatus = useCallback((taskId: string, status: TaskStatuses, todolistId: string) => {
@@ -54,12 +59,11 @@ export const AppWithRedux = () => {
     }, [dispatch]);
 
     const addNewTodolist = useCallback((title: string) => {
-        const action = addTodolistAC(title);
-        dispatch(action);
+        dispatch(addTodolistTC(title));
     }, [dispatch]);
 
     const removeTodolist = useCallback((todolistId: string) => {
-        dispatch(removeTodolistAC(todolistId));
+        dispatch(removeTodolistTC(todolistId));
     }, [dispatch]);
 
     const changeTodolistFilter = useCallback((filter: FilterType, todolistId: string) => {

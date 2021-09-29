@@ -54,8 +54,8 @@ export type TaskType = {
 export type UpdatedPropertiesType = {
     title: string
     description: string
-    status: number
-    priority: number
+    status: TaskStatuses
+    priority: TaskPriorities
     startDate: string
     deadline: string
 }
@@ -66,8 +66,8 @@ export type TasksType = {
     error: string
 }
 
-export type CreateTodolistTasksType = {
-    data: TaskType
+export type CreateTodolistTasksType<T = {}> = {
+    data: T
     resultCode: number
     messages: string[]
     fieldsErrors: string[]
@@ -110,7 +110,7 @@ export const todolistsAPI = {
     },
 
     createTodolistTask(todolistId: string, title: string) {
-        return instance.post<CreateTodolistTasksType>(`todo-lists/${todolistId}/tasks`, {title: title})
+        return instance.post<CreateTodolistTasksType<{ item: TaskType }>>(`todo-lists/${todolistId}/tasks`, {title: title})
             .then(res => {
                 return res.data;
             });
