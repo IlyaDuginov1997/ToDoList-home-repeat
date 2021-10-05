@@ -1,7 +1,6 @@
-import {v1} from 'uuid';
 import {AddTodolistType, RemoveTodolistType, SetTodolistsType} from './todolist-reducer';
 import {TasksType} from '../AppWithRedux';
-import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI} from '../API/todolists-api';
+import {TaskStatuses, TaskType, todolistsAPI} from '../API/todolists-api';
 import {Dispatch} from 'redux';
 import {AppRootStateType} from './Store';
 
@@ -26,7 +25,6 @@ const initialState: TasksType = {};
 export const taskReducer = (state: TasksType = initialState, action: AllTasksTypes): TasksType => {
     switch (action.type) {
         case 'ADD-TASK':
-            debugger
             const newTask: TaskType = {...action.task};
             return {
                 ...state,

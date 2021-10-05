@@ -4,7 +4,7 @@ import {AddItemForm} from './AddItemForm';
 import {
     addTodolistTC,
     changeFilterTodolistAC,
-    changeTitleTodolistAC, changeTodolistTitleTC,
+    changeTodolistTitleTC,
     removeTodolistTC,
     setTodolistTC,
     TodolistDomainType

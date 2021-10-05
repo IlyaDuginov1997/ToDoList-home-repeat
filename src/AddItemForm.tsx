@@ -1,44 +1,59 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import IconButton from '@mui/material/IconButton';
+import TextField from '@mui/material/TextField';
+import {AddBox} from '@mui/icons-material';
+
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => void
 }
 
 export const AddItemForm = React.memo((props: AddItemFormPropsType) => {
-    console.log('AddItemForm is called')
+    console.log('AddItemForm is called');
 
-    let [title, setTitle] = useState<string>('')
-    let [error, setError] = useState<boolean>(false)
+    let [title, setTitle] = useState<string>('');
+    let [error, setError] = useState<string | null>(null);
 
     const addTitle = () => {
         if (title.trim()) {
-            props.addItem(title.trim().replace(/\s+/g, ' '))
-            setTitle('')
+            props.addItem(title.trim().replace(/\s+/g, ' '));
+            setTitle('');
         } else {
-            setError(true)
+            setError('Title is required');
         }
-    }
+    };
 
     const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.currentTarget.value)
-        setError(false)
-    }
+        setTitle(e.currentTarget.value);
+        setError(null);
+    };
 
     const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.charCode === 13) {
-            addTitle()
+            addTitle();
         }
-    }
+    };
 
     return (
         <div>
-            <input
+            <TextField
+                size="small"
                 className={error ? 'error' : ''}
                 value={title}
                 onKeyPress={onKeyPressHandler}
+                label={'Title'}
+                error={!!error}
+                helperText={error}
                 onChange={changeHandler}/>
-            <button onClick={addTitle}>+</button>
-            {error && <div className={'error-message'}>Title is required</div>}
+
+            <IconButton
+                onClick={addTitle}
+                color="primary"
+            >
+                <AddBox/>
+            </IconButton>
+
+            {/*{error && <div className={'error-message'}>Title is required</div>}*/}
         </div>
-    )
-})
+    );
+});
