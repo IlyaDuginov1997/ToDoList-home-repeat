@@ -28,7 +28,7 @@ export const Task = React.memo((props: TaskPropsType) => {
     }, [props.changeTaskTitle, props.todolistId, props.task.id]);
 
     return (
-        <li
+        <div
             key={props.task.id}
             className={props.task.status === TaskStatuses.Completed ? 'is-done' : ''}>
             <Checkbox
@@ -41,6 +41,6 @@ export const Task = React.memo((props: TaskPropsType) => {
                 <Delete/>
             </IconButton>
 
-        </li>
+        </div>
     );
 });

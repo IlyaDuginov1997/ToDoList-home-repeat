@@ -2,7 +2,7 @@ import React, {useCallback, useEffect} from 'react';
 import {AddItemForm} from './AddItemForm';
 import {EditableSpan} from './EditableSpan';
 import {Task} from './Task';
-import {FilterType} from './AppWithRedux';
+import {FilterType} from './TodolistsList';
 import {TaskStatuses, TaskType} from './API/todolists-api';
 import {useDispatch} from 'react-redux';
 import {setTaskTC} from './Redux-store/tasks-reducer';
@@ -81,23 +81,23 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
                 </IconButton>
             </h3>
             <AddItemForm addItem={addTaskForTodolist}/>
-            <ul>
+            <div>
                 {JSXTasks}
-            </ul>
+            </div>
             <div>
                 <Button
                     color="inherit"
-                    className={props.filter === 'All' ? 'active-filter' : ''}
+                    variant={props.filter === 'All' ? 'outlined' : 'text'}
                     onClick={onAllClickHandler}>All
                 </Button>
                 <Button
                     color="primary"
-                    className={props.filter === 'Active' ? 'active-filter' : ''}
+                    variant={props.filter === 'Active' ? 'outlined' : 'text'}
                     onClick={onActiveClickHandler}>Active
                 </Button>
                 <Button
                     color="error"
-                    className={props.filter === 'Completed' ? 'active-filter' : ''}
+                    variant={props.filter === 'Completed' ? 'outlined' : 'text'}
                     onClick={onComplitedClickHandler}>Completed
                 </Button>
             </div>

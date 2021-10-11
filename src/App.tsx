@@ -5,7 +5,7 @@ import {AddItemForm} from './AddItemForm';
 import {TaskPriorities, TaskStatuses, TaskType} from './API/todolists-api';
 import {TodolistDomainType} from './Redux-store/todolist-reducer';
 import {Todolist} from './Todolist';
-import {FilterType, TasksType} from './AppWithRedux';
+import {FilterType, TasksType} from './TodolistsList';
 
 
 export function App() {

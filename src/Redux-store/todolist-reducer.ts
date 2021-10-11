@@ -1,6 +1,6 @@
 import {v1} from 'uuid';
 import {todolistsAPI, TodolistType} from '../API/todolists-api';
-import {FilterType} from '../AppWithRedux';
+import {FilterType} from '../TodolistsList';
 import {Dispatch} from 'redux';
 
 export type AllTodolistTypes = AddTodolistType

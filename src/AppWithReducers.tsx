@@ -12,7 +12,7 @@ import {
 } from './Redux-store/todolist-reducer';
 import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from './Redux-store/tasks-reducer';
 import {TaskPriorities, TaskStatuses} from './API/todolists-api';
-import {FilterType} from './AppWithRedux';
+import {FilterType} from './TodolistsList';
 
 
 export function AppWithReducers() {
