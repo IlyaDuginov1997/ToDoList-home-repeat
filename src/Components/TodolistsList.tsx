@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import './App.css';
+import '../App.css';
 import {AddItemForm} from './AddItemForm';
 import {
     addTodolistTC,
@@ -8,13 +8,13 @@ import {
     removeTodolistTC,
     setTodolistTC,
     TodolistDomainType
-} from './Redux-store/todolist-reducer';
-import {addTaskTC, changeTaskStatusTC, changeTaskTitleTC, removeTaskTC} from './Redux-store/tasks-reducer';
+} from '../Redux-store/TodolistReducer/todolist-reducer';
+import {addTaskTC, changeTaskStatusTC, changeTaskTitleTC, removeTaskTC} from '../Redux-store/TaskReducer/tasks-reducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {AppRootStateType} from './Redux-store/Store';
-import {TaskStatuses, TaskType} from './API/todolists-api';
+import {AppRootStateType} from '../Redux-store/Store';
+import {TaskStatuses, TaskType} from '../API/todolists-api';
 import {Todolist} from './Todolist';
-import {AppWithReducers} from './AppWithReducers';
+import {AppWithReducers} from '../Evolution-components/AppWithReducers';
 import Container from '@mui/material/Container/Container';
 import {Grid, Paper} from '@mui/material';
 
@@ -29,7 +29,7 @@ export type FilterType = 'All' | 'Active' | 'Completed'
 
 
 export const TodolistsList = () => {
-    console.log('App is called');
+    console.log('TodolistsList is called');
 
 
     let todolists = useSelector<AppRootStateType, TodolistDomainType[]>((state) => state.todolists);
@@ -95,6 +95,7 @@ export const TodolistsList = () => {
                                         todolistId={tl.id}
                                         title={tl.title}
                                         filter={tl.filter}
+                                        entityStatus={tl.entityStatus}
                                         tasks={allTodolistTasks}
                                         removeTodolist={removeTodolist}
                                         changeTaskTitle={changeTaskTitle}

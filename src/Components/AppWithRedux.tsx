@@ -6,8 +6,15 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {TodolistsList} from './TodolistsList';
+import {ErrorPreloader} from './ErrorPreloader';
+import {useSelector} from 'react-redux';
+import {AppRootStateType} from '../Redux-store/Store';
+import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
 
 export function AppWithRedux() {
+
+    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
+
     return (
         <div className="App">
             <AppBar position="static">
@@ -27,7 +34,9 @@ export function AppWithRedux() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
+            {status === 'loading' && <ErrorPreloader/>}
             <TodolistsList/>
+
         </div>
     );
 }

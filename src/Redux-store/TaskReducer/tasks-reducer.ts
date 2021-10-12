@@ -1,8 +1,9 @@
-import {AddTodolistType, RemoveTodolistType, SetTodolistsType} from './todolist-reducer';
-import {TasksType} from '../TodolistsList';
-import {TaskStatuses, TaskType, todolistsAPI} from '../API/todolists-api';
+import {AddTodolistType, RemoveTodolistType, SetTodolistsType} from '../TodolistReducer/todolist-reducer';
+import {TasksType} from '../../Components/TodolistsList';
+import {TaskStatuses, TaskType, todolistsAPI} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
-import {AppRootStateType} from './Store';
+import {AppRootStateType} from '../Store';
+import {setStatusPreloader} from '../AppReducer/app-reducer';
 
 export type AllTasksTypes = AddTaskType
     | RemoveTaskType
@@ -130,9 +131,11 @@ export const setTasksAC = (tasks: TaskType[], todolistId: string) => {
 
 export const setTaskTC = (todolistId: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
         todolistsAPI.getTodolistTasks(todolistId)
             .then(res => {
                 dispatch(setTasksAC(res.items, todolistId));
+                dispatch(setStatusPreloader('succeeded'));
             });
     };
 };
@@ -140,9 +143,11 @@ export const setTaskTC = (todolistId: string) => {
 
 export const removeTaskTC = (taskId: string, todolistId: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
         todolistsAPI.deleteTodolistTask(todolistId, taskId)
             .then(res => {
                 dispatch(removeTaskAC(taskId, todolistId));
+                dispatch(setStatusPreloader('succeeded'));
             });
     };
 };
@@ -150,9 +155,11 @@ export const removeTaskTC = (taskId: string, todolistId: string) => {
 
 export const addTaskTC = (title: string, todolistId: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
         todolistsAPI.createTodolistTask(todolistId, title)
             .then(res => {
                 dispatch(addTaskAC(res.data.item));
+                dispatch(setStatusPreloader('succeeded'));
             });
     };
 };
@@ -163,6 +170,7 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
         const allTasks = getState().tasks;
         const task = allTasks[todolistId].find((t) => t.id === taskId);
         if (task) {
+            dispatch(setStatusPreloader('loading'));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title: task.title,
                 description: task.description,
@@ -173,6 +181,7 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
             })
                 .then(res => {
                     dispatch(changeTaskStatusAC(taskId, status, todolistId));
+                    dispatch(setStatusPreloader('succeeded'));
                 });
         }
     };
@@ -188,6 +197,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
             }
         });
         if (ourTask) {
+            dispatch(setStatusPreloader('loading'));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title,
                 description: ourTask.description,
@@ -198,6 +208,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
             })
                 .then(res => {
                     dispatch(changeTaskTitleAC(title, todolistId, taskId));
+                    dispatch(setStatusPreloader('succeeded'));
                 });
         }
     };

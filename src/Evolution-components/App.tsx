@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
-import './App.css';
+import '../App.css';
 import {v1} from 'uuid';
-import {AddItemForm} from './AddItemForm';
-import {TaskPriorities, TaskStatuses, TaskType} from './API/todolists-api';
-import {TodolistDomainType} from './Redux-store/todolist-reducer';
-import {Todolist} from './Todolist';
-import {FilterType, TasksType} from './TodolistsList';
+import {AddItemForm} from '../Components/AddItemForm';
+import {TaskPriorities, TaskStatuses, TaskType} from '../API/todolists-api';
+import {TodolistDomainType} from '../Redux-store/TodolistReducer/todolist-reducer';
+import {Todolist} from '../Components/Todolist';
+import {FilterType, TasksType} from '../Components/TodolistsList';
 
 
 export function App() {
@@ -14,8 +14,8 @@ export function App() {
     const todolistId2 = v1();
 
     let [todolists, setTodolists] = useState<Array<TodolistDomainType>>([
-        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '',},
-        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '',},
+        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded'},
+        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded'},
     ]);
     let [tasks, setTasks] = useState<TasksType>(
         {
@@ -89,7 +89,7 @@ export function App() {
     const addNewTodolist = (title: string) => {
         const todolistId = v1();
         let newTodolist: TodolistDomainType = {
-            id: todolistId, title: title, filter: 'All', addedDate: '', order: 0,
+            id: todolistId, title: title, filter: 'All', addedDate: '', order: 0, entityStatus: 'succeeded',
         };
         setTodolists([newTodolist, ...todolists]);
         setTasks({...tasks, [todolistId]: []});
@@ -133,6 +133,7 @@ export function App() {
                         todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
+                        entityStatus={tl.entityStatus}
                         tasks={copyTasks}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}

@@ -1,18 +1,18 @@
 import React, {useReducer} from 'react';
-import './App.css';
-import {Todolist} from './Todolist';
+import '../App.css';
+import {Todolist} from '../Components/Todolist';
 import {v1} from 'uuid';
-import {AddItemForm} from './AddItemForm';
+import {AddItemForm} from '../Components/AddItemForm';
 import {
     addTodolistAC,
     changeFilterTodolistAC,
     changeTitleTodolistAC,
     removeTodolistAC,
     todolistReducer
-} from './Redux-store/todolist-reducer';
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from './Redux-store/tasks-reducer';
-import {TaskPriorities, TaskStatuses} from './API/todolists-api';
-import {FilterType} from './TodolistsList';
+} from '../Redux-store/TodolistReducer/todolist-reducer';
+import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, taskReducer} from '../Redux-store/TaskReducer/tasks-reducer';
+import {TaskPriorities, TaskStatuses} from '../API/todolists-api';
+import {FilterType} from '../Components/TodolistsList';
 
 
 export function AppWithReducers() {
@@ -21,8 +21,8 @@ export function AppWithReducers() {
     const todolistId2 = v1();
 
     let [todolists, dispatchToTodolists] = useReducer(todolistReducer, [
-        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '',},
-        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '',},
+        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',},
+        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',},
     ]);
 
     let [tasks, dispatchToTasks] = useReducer(taskReducer, {
@@ -119,6 +119,7 @@ export function AppWithReducers() {
                         todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
+                        entityStatus={tl.entityStatus}
                         tasks={copyTasks}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}

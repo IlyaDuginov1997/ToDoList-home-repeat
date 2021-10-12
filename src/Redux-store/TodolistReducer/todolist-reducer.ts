@@ -1,16 +1,18 @@
-import {v1} from 'uuid';
-import {todolistsAPI, TodolistType} from '../API/todolists-api';
-import {FilterType} from '../TodolistsList';
+import {todolistsAPI, TodolistType} from '../../API/todolists-api';
+import {FilterType} from '../../Components/TodolistsList';
 import {Dispatch} from 'redux';
+import {RequestStatusType, setStatusPreloader} from '../AppReducer/app-reducer';
 
 export type AllTodolistTypes = AddTodolistType
     | RemoveTodolistType
     | ChangeTitleTodolistType
     | ChangeFilterTodolistType
     | SetTodolistsType
+    | SetTodolistStatusType
 
 export type TodolistDomainType = TodolistType & {
     filter: FilterType
+    entityStatus: RequestStatusType
 }
 
 export type AddTodolistType = ReturnType<typeof addTodolistAC>
@@ -18,6 +20,7 @@ export type RemoveTodolistType = ReturnType<typeof removeTodolistAC>
 export type ChangeTitleTodolistType = ReturnType<typeof changeTitleTodolistAC>
 export type ChangeFilterTodolistType = ReturnType<typeof changeFilterTodolistAC>
 export type SetTodolistsType = ReturnType<typeof setTodolistsAC>
+export type SetTodolistStatusType = ReturnType<typeof setTodolistStatus>
 
 
 const initialState: TodolistDomainType[] = [];
@@ -25,7 +28,7 @@ const initialState: TodolistDomainType[] = [];
 export const todolistReducer = (state: TodolistDomainType[] = initialState, action: AllTodolistTypes): TodolistDomainType[] => {
     switch (action.type) {
         case 'ADD-TODOLIST':
-            let newTodolist: TodolistDomainType = {...action.todolist, filter: 'All'};
+            let newTodolist: TodolistDomainType = {...action.todolist, filter: 'All', entityStatus: 'succeeded'};
             return [newTodolist, ...state,];
         case 'REMOVE-TODOLIST':
             return state.filter((tl) => tl.id !== action.todolistId);
@@ -37,11 +40,18 @@ export const todolistReducer = (state: TodolistDomainType[] = initialState, acti
             return action.todolists.map(t => {
                     return {
                         ...t,
-                        filter: 'All'
+                        filter: 'All',
+                        entityStatus: 'succeeded',
                     };
                 }
             );
-
+        case 'TODO/SET-STATUS':
+            return state.map((td) => td.id === action.todolistId
+                ? {
+                    ...td,
+                    entityStatus: action.status
+                }
+                : td);
         default:
             return state;
     }
@@ -84,38 +94,56 @@ export const setTodolistsAC = (todolists: TodolistType[]) => {
     } as const;
 };
 
+export const setTodolistStatus = (status: RequestStatusType, todolistId: string) => {
+    return {
+        type: 'TODO/SET-STATUS',
+        status,
+        todolistId,
+    } as const;
+};
+
 export const setTodolistTC = () => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
         todolistsAPI.getTodolists()
             .then(res => {
                 dispatch(setTodolistsAC(res));
+                dispatch(setStatusPreloader('succeeded'));
             });
     };
 };
 
 export const removeTodolistTC = (todolistId: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
+        dispatch(setTodolistStatus('loading', todolistId));
         todolistsAPI.deleteTodolist(todolistId)
             .then(res => {
                 dispatch(removeTodolistAC(todolistId));
+                dispatch(setStatusPreloader('succeeded'));
+                dispatch(setTodolistStatus('succeeded', todolistId));
             });
     };
 };
 
 export const addTodolistTC = (title: string) => {
     return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
         todolistsAPI.createTodolist(title)
             .then(res => {
                 dispatch(addTodolistAC(res.data.item));
+                dispatch(setStatusPreloader('succeeded'));
             });
     };
 };
 
 export const changeTodolistTitleTC = (title: string, todolistId: string) => {
-        return (dispatch: Dispatch) => {
-            todolistsAPI.updateTodolist(todolistId, title)
-                .then(res => {
-                    dispatch(changeTitleTodolistAC(title, todolistId))
-                })
-        }
-}
+    return (dispatch: Dispatch) => {
+        dispatch(setStatusPreloader('loading'));
+        todolistsAPI.updateTodolist(todolistId, title)
+            .then(res => {
+                dispatch(changeTitleTodolistAC(title, todolistId));
+                dispatch(setStatusPreloader('succeeded'));
+            });
+    };
+};
