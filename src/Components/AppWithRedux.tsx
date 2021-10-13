@@ -6,10 +6,11 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import {TodolistsList} from './TodolistsList';
-import {ErrorPreloader} from './ErrorPreloader';
+import {StatusPreloader} from './StatusPreloader';
 import {useSelector} from 'react-redux';
 import {AppRootStateType} from '../Redux-store/Store';
 import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
+import { ErrorAlert } from './ErrorAlert';
 
 export function AppWithRedux() {
 
@@ -17,6 +18,7 @@ export function AppWithRedux() {
 
     return (
         <div className="App">
+            <ErrorAlert/>
             <AppBar position="static">
                 <Toolbar>
                     <IconButton
@@ -34,7 +36,7 @@ export function AppWithRedux() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
-            {status === 'loading' && <ErrorPreloader/>}
+            {status === 'loading' && <StatusPreloader/>}
             <TodolistsList/>
 
         </div>

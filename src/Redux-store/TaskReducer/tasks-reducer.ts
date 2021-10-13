@@ -3,7 +3,7 @@ import {TasksType} from '../../Components/TodolistsList';
 import {TaskStatuses, TaskType, todolistsAPI} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
 import {AppRootStateType} from '../Store';
-import {setStatusPreloader} from '../AppReducer/app-reducer';
+import {setError, setStatusPreloader} from '../AppReducer/app-reducer';
 
 export type AllTasksTypes = AddTaskType
     | RemoveTaskType
@@ -158,8 +158,17 @@ export const addTaskTC = (title: string, todolistId: string) => {
         dispatch(setStatusPreloader('loading'));
         todolistsAPI.createTodolistTask(todolistId, title)
             .then(res => {
-                dispatch(addTaskAC(res.data.item));
-                dispatch(setStatusPreloader('succeeded'));
+                if (res.resultCode === 0) {
+                    dispatch(addTaskAC(res.data.item));
+                    dispatch(setStatusPreloader('succeeded'));
+                } else {
+                    if (res.messages.length) {
+                        dispatch(setError(res.messages[0]));
+                    } else {
+                        dispatch(setError('We have some troubles. Сonnect with technical support'));
+                    }
+                    dispatch(setStatusPreloader('failed'));
+                }
             });
     };
 };
@@ -207,8 +216,17 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
                 deadline: ourTask.deadline,
             })
                 .then(res => {
-                    dispatch(changeTaskTitleAC(title, todolistId, taskId));
-                    dispatch(setStatusPreloader('succeeded'));
+                    if (res.resultCode === 0) {
+                        dispatch(changeTaskTitleAC(title, todolistId, taskId));
+                        dispatch(setStatusPreloader('succeeded'));
+                    } else {
+                        if (res.messages.length) {
+                            dispatch(setError(res.messages[0]));
+                        } else {
+                            dispatch(setError('We have some troubles. Сonnect with technical support'));
+                        }
+                        dispatch(setStatusPreloader('failed'));
+                    }
                 });
         }
     };
