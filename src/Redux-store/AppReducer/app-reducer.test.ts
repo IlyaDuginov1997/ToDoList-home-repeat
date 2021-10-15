@@ -1,18 +1,21 @@
-import {AppPreloaderStateType, appReducer, setStatusPreloader} from './app-reducer';
+import {AppPreloaderStateType, appReducer, setAppStatus, setAppError} from './app-reducer';
 
 let startState: AppPreloaderStateType
 beforeEach(() => {
         startState = {
-            status: 'succeeded'
+            status: 'succeeded',
+            error: null
         };
     }
 );
 
 test('status should be failed', () => {
-
-
-    const endState = appReducer(startState, setStatusPreloader('failed'));
-
+    const endState = appReducer(startState, setAppStatus('failed'));
     expect(endState.status).toBe('failed');
+});
 
+test('error should be setted', () => {
+    const endState = appReducer(startState, setAppError('some troubles'));
+    expect(startState.error).toBe(null);
+    expect(endState.error).toBe('some troubles');
 });

@@ -82,7 +82,7 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
                     <Delete/>
                 </IconButton>
             </h3>
-            <AddItemForm addItem={addTaskForTodolist}/>
+            <AddItemForm addItem={addTaskForTodolist} disabled={props.entityStatus === 'loading'}/>
             <div>
                 {JSXTasks}
             </div>
@@ -90,16 +90,20 @@ export const Todolist = React.memo((props: TodolistPropsType) => {
                 <Button
                     color="inherit"
                     variant={props.filter === 'All' ? 'outlined' : 'text'}
+                    disabled={props.entityStatus === 'loading'}
                     onClick={onAllClickHandler}>All
+
                 </Button>
                 <Button
                     color="primary"
                     variant={props.filter === 'Active' ? 'outlined' : 'text'}
+                    disabled={props.entityStatus === 'loading'}
                     onClick={onActiveClickHandler}>Active
                 </Button>
                 <Button
                     color="error"
                     variant={props.filter === 'Completed' ? 'outlined' : 'text'}
+                    disabled={props.entityStatus === 'loading'}
                     onClick={onComplitedClickHandler}>Completed
                 </Button>
             </div>

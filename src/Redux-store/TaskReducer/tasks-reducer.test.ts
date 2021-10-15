@@ -117,8 +117,8 @@ test('property with todolistId should be deleted', () => {
 
 test('tasks-array should be created with setted todolists', () => {
         const todolistsArr: TodolistDomainType[] = [
-            {id: '1', title: 'What to learn', filter: 'All', order: 0, addedDate: '',},
-            {id: '2', title: 'What to buy', filter: 'All', order: 0, addedDate: '',}
+            {id: '1', title: 'What to learn', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',},
+            {id: '2', title: 'What to buy', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',}
         ];
 
         const endState = taskReducer({}, setTodolistsAC(todolistsArr));

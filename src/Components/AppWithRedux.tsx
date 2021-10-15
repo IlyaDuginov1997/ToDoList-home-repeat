@@ -14,7 +14,7 @@ import { ErrorAlert } from './ErrorAlert';
 
 export function AppWithRedux() {
 
-    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
+    const statusPreloader = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
 
     return (
         <div className="App">
@@ -36,7 +36,7 @@ export function AppWithRedux() {
                     <Button color="inherit">Login</Button>
                 </Toolbar>
             </AppBar>
-            {status === 'loading' && <StatusPreloader/>}
+            {statusPreloader === 'loading' && <StatusPreloader/>}
             <TodolistsList/>
 
         </div>

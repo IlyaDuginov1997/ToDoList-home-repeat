@@ -21,8 +21,8 @@ export function AppWithReducers() {
     const todolistId2 = v1();
 
     let [todolists, dispatchToTodolists] = useReducer(todolistReducer, [
-        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',},
-        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',},
+        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',},
+        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',},
     ]);
 
     let [tasks, dispatchToTasks] = useReducer(taskReducer, {
@@ -101,7 +101,7 @@ export function AppWithReducers() {
 
     return (
         <div className="App">
-            <AddItemForm addItem={addNewTodolist}/>
+            <AddItemForm addItem={addNewTodolist} disabled={false}/>
             {todolists.map(tl => {
                 let allTodolistTasks = tasks[tl.id];
                 let copyTasks = allTodolistTasks;
@@ -119,7 +119,7 @@ export function AppWithReducers() {
                         todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
-                        entityStatus={tl.entityStatus}
+                        entityStatus={tl.todolistEntityStatus}
                         tasks={copyTasks}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}

@@ -14,8 +14,8 @@ export function App() {
     const todolistId2 = v1();
 
     let [todolists, setTodolists] = useState<Array<TodolistDomainType>>([
-        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded'},
-        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded'},
+        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded'},
+        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded'},
     ]);
     let [tasks, setTasks] = useState<TasksType>(
         {
@@ -89,7 +89,7 @@ export function App() {
     const addNewTodolist = (title: string) => {
         const todolistId = v1();
         let newTodolist: TodolistDomainType = {
-            id: todolistId, title: title, filter: 'All', addedDate: '', order: 0, entityStatus: 'succeeded',
+            id: todolistId, title: title, filter: 'All', addedDate: '', order: 0, todolistEntityStatus: 'succeeded',
         };
         setTodolists([newTodolist, ...todolists]);
         setTasks({...tasks, [todolistId]: []});
@@ -115,7 +115,7 @@ export function App() {
 
     return (
         <div className="App">
-            <AddItemForm addItem={addNewTodolist}/>
+            <AddItemForm addItem={addNewTodolist} disabled={false}/>
             {todolists.map(tl => {
                 let allTodolistTasks = tasks[tl.id];
                 let copyTasks = allTodolistTasks;
@@ -133,7 +133,7 @@ export function App() {
                         todolistId={tl.id}
                         title={tl.title}
                         filter={tl.filter}
-                        entityStatus={tl.entityStatus}
+                        entityStatus={tl.todolistEntityStatus}
                         tasks={copyTasks}
                         removeTodolist={removeTodolist}
                         changeTaskTitle={changeTaskTitle}

@@ -18,8 +18,8 @@ beforeEach(() => {
     todolistId2 = v1();
 
     startState = [
-        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',},
-        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', entityStatus: 'succeeded',}
+        {id: todolistId1, title: 'What to learn', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',},
+        {id: todolistId2, title: 'What to buy', filter: 'All', order: 0, addedDate: '', todolistEntityStatus: 'succeeded',}
     ];
 });
 
@@ -66,8 +66,8 @@ test('todolists should be setted', () => {
 test('todolist status should be changed', () => {
     const endState = todolistReducer(startState, setTodolistStatus('loading', startState[1].id));
 
-    expect(endState[0].entityStatus).toBe('succeeded');
-    expect(endState[1].entityStatus).toBe('loading');
+    expect(endState[0].todolistEntityStatus).toBe('succeeded');
+    expect(endState[1].todolistEntityStatus).toBe('loading');
 
 });
 

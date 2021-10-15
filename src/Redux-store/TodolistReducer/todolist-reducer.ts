@@ -1,7 +1,8 @@
 import {todolistsAPI, TodolistType} from '../../API/todolists-api';
 import {FilterType} from '../../Components/TodolistsList';
 import {Dispatch} from 'redux';
-import {RequestStatusType, setStatusPreloader} from '../AppReducer/app-reducer';
+import {RequestStatusType, setAppError, setAppStatus} from '../AppReducer/app-reducer';
+import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
 
 export type AllTodolistTypes = AddTodolistType
     | RemoveTodolistType
@@ -12,7 +13,7 @@ export type AllTodolistTypes = AddTodolistType
 
 export type TodolistDomainType = TodolistType & {
     filter: FilterType
-    entityStatus: RequestStatusType
+    todolistEntityStatus: RequestStatusType
 }
 
 export type AddTodolistType = ReturnType<typeof addTodolistAC>
@@ -28,7 +29,11 @@ const initialState: TodolistDomainType[] = [];
 export const todolistReducer = (state: TodolistDomainType[] = initialState, action: AllTodolistTypes): TodolistDomainType[] => {
     switch (action.type) {
         case 'ADD-TODOLIST':
-            let newTodolist: TodolistDomainType = {...action.todolist, filter: 'All', entityStatus: 'succeeded'};
+            let newTodolist: TodolistDomainType = {
+                ...action.todolist,
+                filter: 'All',
+                todolistEntityStatus: 'succeeded'
+            };
             return [newTodolist, ...state,];
         case 'REMOVE-TODOLIST':
             return state.filter((tl) => tl.id !== action.todolistId);
@@ -41,7 +46,7 @@ export const todolistReducer = (state: TodolistDomainType[] = initialState, acti
                     return {
                         ...t,
                         filter: 'All',
-                        entityStatus: 'succeeded',
+                        todolistEntityStatus: 'succeeded',
                     };
                 }
             );
@@ -49,7 +54,7 @@ export const todolistReducer = (state: TodolistDomainType[] = initialState, acti
             return state.map((td) => td.id === action.todolistId
                 ? {
                     ...td,
-                    entityStatus: action.status
+                    todolistEntityStatus: action.todolistEntityStatus
                 }
                 : td);
         default:
@@ -94,56 +99,86 @@ export const setTodolistsAC = (todolists: TodolistType[]) => {
     } as const;
 };
 
-export const setTodolistStatus = (status: RequestStatusType, todolistId: string) => {
+export const setTodolistStatus = (todolistEntityStatus: RequestStatusType, todolistId: string) => {
     return {
         type: 'TODO/SET-STATUS',
-        status,
+        todolistEntityStatus,
         todolistId,
     } as const;
 };
 
 export const setTodolistTC = () => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: todolistReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.getTodolists()
             .then(res => {
                 dispatch(setTodolistsAC(res));
-                dispatch(setStatusPreloader('succeeded'));
+                dispatch(setAppStatus('succeeded'));
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 export const removeTodolistTC = (todolistId: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: todolistReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         dispatch(setTodolistStatus('loading', todolistId));
         todolistsAPI.deleteTodolist(todolistId)
             .then(res => {
                 dispatch(removeTodolistAC(todolistId));
-                dispatch(setStatusPreloader('succeeded'));
-                dispatch(setTodolistStatus('succeeded', todolistId));
+                dispatch(setAppStatus('succeeded'));
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 export const addTodolistTC = (title: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: todolistReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.createTodolist(title)
             .then(res => {
-                dispatch(addTodolistAC(res.data.item));
-                dispatch(setStatusPreloader('succeeded'));
+                if (res.resultCode === 0) {
+                    dispatch(addTodolistAC(res.data.item));
+                    dispatch(setAppStatus('succeeded'));
+                } else {
+                    // util helper-function
+                    handlerServerAppError(res, dispatch);
+                }
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 export const changeTodolistTitleTC = (title: string, todolistId: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: todolistReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.updateTodolist(todolistId, title)
             .then(res => {
-                dispatch(changeTitleTodolistAC(title, todolistId));
-                dispatch(setStatusPreloader('succeeded'));
+                if (res.resultCode === 0) {
+                    dispatch(changeTitleTodolistAC(title, todolistId));
+                    dispatch(setAppStatus('succeeded'));
+                } else {
+                    // util helper-function
+                    handlerServerAppError(res, dispatch);
+                }
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
+
+
+export type todolistReducerThunkDispatch = Dispatch<AllTodolistTypes
+    | ReturnType<typeof setAppStatus>
+    | ReturnType<typeof setAppError>>

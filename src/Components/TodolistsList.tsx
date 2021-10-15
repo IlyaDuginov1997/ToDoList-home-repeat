@@ -79,7 +79,7 @@ export const TodolistsList = () => {
         <div>
             <Container fixed>
                 <Grid container style={{padding: '20px'}}>
-                    <AddItemForm addItem={addNewTodolist}/>
+                    <AddItemForm addItem={addNewTodolist} disabled={false}/>
                 </Grid>
                 <Grid container spacing={3}>
                     {todolists.map(tl => {
@@ -95,7 +95,7 @@ export const TodolistsList = () => {
                                         todolistId={tl.id}
                                         title={tl.title}
                                         filter={tl.filter}
-                                        entityStatus={tl.entityStatus}
+                                        entityStatus={tl.todolistEntityStatus}
                                         tasks={allTodolistTasks}
                                         removeTodolist={removeTodolist}
                                         changeTaskTitle={changeTaskTitle}

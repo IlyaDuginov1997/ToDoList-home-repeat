@@ -5,8 +5,8 @@ export type AppPreloaderStateType = {
     error: string | null
 }
 
-export type AppTypes = ReturnType<typeof setStatusPreloader> |
-    ReturnType<typeof setError>
+export type AppTypes = ReturnType<typeof setAppStatus> |
+    ReturnType<typeof setAppError>
 
 const initialState: AppPreloaderStateType = {
     status: 'succeeded',
@@ -30,14 +30,14 @@ export const appReducer = (state: AppPreloaderStateType = initialState, action: 
     }
 };
 
-export const setStatusPreloader = (status: RequestStatusType) => {
+export const setAppStatus = (status: RequestStatusType) => {
     return {
         type: 'APP/SET-STATUS',
         status,
     } as const;
 };
 
-export const setError = (error: string | null) => {
+export const setAppError = (error: string | null) => {
     return {
         type: 'APP/SET-ERROR',
         error,

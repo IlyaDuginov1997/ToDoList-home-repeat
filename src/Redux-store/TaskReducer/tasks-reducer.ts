@@ -1,9 +1,15 @@
-import {AddTodolistType, RemoveTodolistType, SetTodolistsType} from '../TodolistReducer/todolist-reducer';
+import {
+    AddTodolistType,
+    RemoveTodolistType,
+    setTodolistStatus,
+    SetTodolistsType
+} from '../TodolistReducer/todolist-reducer';
 import {TasksType} from '../../Components/TodolistsList';
 import {TaskStatuses, TaskType, todolistsAPI} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
 import {AppRootStateType} from '../Store';
-import {setError, setStatusPreloader} from '../AppReducer/app-reducer';
+import {setAppError, setAppStatus} from '../AppReducer/app-reducer';
+import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
 
 export type AllTasksTypes = AddTaskType
     | RemoveTaskType
@@ -13,7 +19,6 @@ export type AllTasksTypes = AddTaskType
     | RemoveTodolistType
     | SetTodolistsType
     | SetTasksType
-
 
 export type AddTaskType = ReturnType<typeof addTaskAC>
 export type RemoveTaskType = ReturnType<typeof removeTaskAC>
@@ -130,56 +135,65 @@ export const setTasksAC = (tasks: TaskType[], todolistId: string) => {
 
 
 export const setTaskTC = (todolistId: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: taskReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.getTodolistTasks(todolistId)
             .then(res => {
                 dispatch(setTasksAC(res.items, todolistId));
-                dispatch(setStatusPreloader('succeeded'));
+                dispatch(setAppStatus('succeeded'));
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 
 export const removeTaskTC = (taskId: string, todolistId: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: taskReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.deleteTodolistTask(todolistId, taskId)
             .then(res => {
                 dispatch(removeTaskAC(taskId, todolistId));
-                dispatch(setStatusPreloader('succeeded'));
+                dispatch(setAppStatus('succeeded'));
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 
 export const addTaskTC = (title: string, todolistId: string) => {
-    return (dispatch: Dispatch) => {
-        dispatch(setStatusPreloader('loading'));
+    return (dispatch: taskReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
         todolistsAPI.createTodolistTask(todolistId, title)
             .then(res => {
                 if (res.resultCode === 0) {
                     dispatch(addTaskAC(res.data.item));
-                    dispatch(setStatusPreloader('succeeded'));
+                    dispatch(setAppStatus('succeeded'));
+                    dispatch(setTodolistStatus('succeeded', todolistId));
                 } else {
-                    if (res.messages.length) {
-                        dispatch(setError(res.messages[0]));
-                    } else {
-                        dispatch(setError('We have some troubles. Сonnect with technical support'));
-                    }
-                    dispatch(setStatusPreloader('failed'));
+                    // util helper-function
+                    handlerServerAppError(res, dispatch);
                 }
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch)
             });
     };
 };
 
 
 export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolistId: string) => {
-    return (dispatch: Dispatch, getState: () => AppRootStateType) => {
+    return (dispatch: taskReducerThunkDispatch, getState: () => AppRootStateType) => {
         const allTasks = getState().tasks;
         const task = allTasks[todolistId].find((t) => t.id === taskId);
         if (task) {
-            dispatch(setStatusPreloader('loading'));
+            dispatch(setAppStatus('loading'));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title: task.title,
                 description: task.description,
@@ -190,14 +204,18 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
             })
                 .then(res => {
                     dispatch(changeTaskStatusAC(taskId, status, todolistId));
-                    dispatch(setStatusPreloader('succeeded'));
+                    dispatch(setAppStatus('succeeded'));
+                })
+                .catch(err => {
+                    // util helper-function
+                    handlerServerNetworkError(err, dispatch)
                 });
         }
     };
 };
 
 export const changeTaskTitleTC = (title: string, taskId: string, todolistId: string) => {
-    return (dispatch: Dispatch, getState: () => AppRootStateType) => {
+    return (dispatch: taskReducerThunkDispatch, getState: () => AppRootStateType) => {
         const allTasks = getState().tasks;
         const task = allTasks[todolistId];
         const ourTask = task.find((t) => {
@@ -206,7 +224,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
             }
         });
         if (ourTask) {
-            dispatch(setStatusPreloader('loading'));
+            dispatch(setAppStatus('loading'));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title,
                 description: ourTask.description,
@@ -216,18 +234,24 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
                 deadline: ourTask.deadline,
             })
                 .then(res => {
+                    debugger
                     if (res.resultCode === 0) {
                         dispatch(changeTaskTitleAC(title, todolistId, taskId));
-                        dispatch(setStatusPreloader('succeeded'));
+                        dispatch(setAppStatus('succeeded'));
                     } else {
-                        if (res.messages.length) {
-                            dispatch(setError(res.messages[0]));
-                        } else {
-                            dispatch(setError('We have some troubles. Сonnect with technical support'));
-                        }
-                        dispatch(setStatusPreloader('failed'));
+                        // util helper-function
+                        handlerServerAppError(res, dispatch);
                     }
+                })
+                .catch(err => {
+                    // util helper-function
+                    handlerServerNetworkError(err, dispatch)
                 });
         }
     };
 };
+
+export type taskReducerThunkDispatch = Dispatch<AllTasksTypes
+    | ReturnType<typeof setAppStatus>
+    | ReturnType<typeof setAppError>
+    | ReturnType<typeof setTodolistStatus>>
