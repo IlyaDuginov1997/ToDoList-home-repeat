@@ -5,17 +5,19 @@ import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import {store} from './Redux-store/Store';
 import {AppWithRedux} from './Components/AppWithRedux';
+import {BrowserRouter} from 'react-router-dom';
 
 
 // import {createTheme, ThemeProvider} from "@material-ui/core";
 
 // const theme = createTheme();
 
-ReactDOM.render(<Provider store={store}>
-        {/*<ThemeProvider theme={theme}>{<AppWithRedux/>}*/}
-        {/*</ThemeProvider>;*/}
-        <AppWithRedux/>
-    </Provider>,
+ReactDOM.render(
+    <BrowserRouter>
+        <Provider store={store}>
+            <AppWithRedux/>
+        </Provider>
+    </BrowserRouter>,
     document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

@@ -10,7 +10,9 @@ import {StatusPreloader} from './StatusPreloader';
 import {useSelector} from 'react-redux';
 import {AppRootStateType} from '../Redux-store/Store';
 import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
-import { ErrorAlert } from './ErrorAlert';
+import {ErrorAlert} from './ErrorAlert';
+import { Login } from './Login';
+import {Redirect, Route, Switch } from 'react-router-dom';
 
 export function AppWithRedux() {
 
@@ -37,8 +39,12 @@ export function AppWithRedux() {
                 </Toolbar>
             </AppBar>
             {statusPreloader === 'loading' && <StatusPreloader/>}
-            <TodolistsList/>
-
+            <Switch>
+                <Route exact path={'/'} render={() => <TodolistsList/>} />
+                <Route path={'/login'} render={() => <Login/>} />
+                <Route path={'/404'} render={() => <h1>Hey</h1>} />
+                <Redirect from={'*'} to={'/404'} />
+            </Switch>
         </div>
     );
 }
