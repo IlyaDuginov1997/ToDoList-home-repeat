@@ -8,7 +8,7 @@ import {TasksType} from '../../Components/TodolistsList';
 import {TaskStatuses, TaskType, todolistsAPI} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
 import {AppRootStateType} from '../Store';
-import {setAppError, setAppStatus} from '../AppReducer/app-reducer';
+import {RequestStatusType, setAppError, setAppStatus} from '../AppReducer/app-reducer';
 import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
 
 export type AllTasksTypes = AddTaskType
@@ -26,6 +26,10 @@ export type ChangeTaskTitleType = ReturnType<typeof changeTaskTitleAC>
 export type ChangeTaskStatusType = ReturnType<typeof changeTaskStatusAC>
 export type SetTasksType = ReturnType<typeof setTasksAC>
 
+
+// export type TaskDomainType = TasksType & {
+//     taskEntityStatus: RequestStatusType
+// }
 const initialState: TasksType = {};
 
 export const taskReducer = (state: TasksType = initialState, action: AllTasksTypes): TasksType => {
@@ -234,7 +238,6 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
                 deadline: ourTask.deadline,
             })
                 .then(res => {
-                    debugger
                     if (res.resultCode === 0) {
                         dispatch(changeTaskTitleAC(title, todolistId, taskId));
                         dispatch(setAppStatus('succeeded'));

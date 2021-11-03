@@ -117,7 +117,7 @@ export const setTodolistTC = () => {
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -133,7 +133,7 @@ export const removeTodolistTC = (todolistId: string) => {
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -153,7 +153,7 @@ export const addTodolistTC = (title: string) => {
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -161,6 +161,7 @@ export const addTodolistTC = (title: string) => {
 export const changeTodolistTitleTC = (title: string, todolistId: string) => {
     return (dispatch: todolistReducerThunkDispatch) => {
         dispatch(setAppStatus('loading'));
+        dispatch(setTodolistStatus('loading', todolistId));
         todolistsAPI.updateTodolist(todolistId, title)
             .then(res => {
                 if (res.resultCode === 0) {
@@ -173,7 +174,10 @@ export const changeTodolistTitleTC = (title: string, todolistId: string) => {
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
+            })
+            .finally(() => {
+                dispatch(setTodolistStatus('succeeded', todolistId));
             });
     };
 };

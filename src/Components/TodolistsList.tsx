@@ -17,6 +17,7 @@ import {Todolist} from './Todolist';
 import {AppWithReducers} from '../Evolution-components/AppWithReducers';
 import Container from '@mui/material/Container/Container';
 import {Grid, Paper} from '@mui/material';
+import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
 
 // что бы после рефакторинга не падали там ошибки
 const AppWithReducersComponent = AppWithReducers;
@@ -30,7 +31,6 @@ export type FilterType = 'All' | 'Active' | 'Completed'
 
 export const TodolistsList = () => {
     console.log('TodolistsList is called');
-
 
     let todolists = useSelector<AppRootStateType, TodolistDomainType[]>((state) => state.todolists);
     let tasks = useSelector<AppRootStateType, TasksType>((state) => state.tasks);
