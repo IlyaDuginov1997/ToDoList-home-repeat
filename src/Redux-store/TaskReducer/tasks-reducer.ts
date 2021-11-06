@@ -8,7 +8,7 @@ import {TasksType} from '../../Components/TodolistsList';
 import {TaskStatuses, TaskType, todolistsAPI} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
 import {AppRootStateType} from '../Store';
-import {RequestStatusType, setAppError, setAppStatus} from '../AppReducer/app-reducer';
+import {setAppError, setAppStatus} from '../AppReducer/app-reducer';
 import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
 
 export type AllTasksTypes = AddTaskType

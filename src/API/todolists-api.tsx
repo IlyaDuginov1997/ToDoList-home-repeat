@@ -9,6 +9,14 @@ const instance = axios.create({
     },
 });
 
+export type LoginParamsType = {
+    email: string
+    password: string
+    rememberMe?: boolean
+    captcha?: boolean
+}
+
+
 export type TodolistType = {
     id: string
     addedDate: string
@@ -131,3 +139,17 @@ export const todolistsAPI = {
     },
 };
 
+export const loginAPI = {
+    login(loginParams: LoginParamsType) {
+        return instance.post<CommonTodolistType<{ userId?: number }>>('auth/login', loginParams)
+            .then(res => {
+                return res.data;
+            });
+    },
+    me() {
+        return instance.get<CommonTodolistType>('auth/me')
+            .then(res => {
+                return res.data;
+            });
+    }
+};

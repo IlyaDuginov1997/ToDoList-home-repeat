@@ -18,6 +18,8 @@ import {AppWithReducers} from '../Evolution-components/AppWithReducers';
 import Container from '@mui/material/Container/Container';
 import {Grid, Paper} from '@mui/material';
 import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
+import {Redirect} from 'react-router-dom';
+import {checkIsLogedInTC} from '../Redux-store/AuthReducer/auth-reducer';
 
 // что бы после рефакторинга не падали там ошибки
 const AppWithReducersComponent = AppWithReducers;
@@ -31,13 +33,18 @@ export type FilterType = 'All' | 'Active' | 'Completed'
 
 export const TodolistsList = () => {
     console.log('TodolistsList is called');
+    debugger
+    const dispatch = useDispatch();
 
     let todolists = useSelector<AppRootStateType, TodolistDomainType[]>((state) => state.todolists);
     let tasks = useSelector<AppRootStateType, TasksType>((state) => state.tasks);
-    const dispatch = useDispatch();
 
+    const isLoading = useSelector<AppRootStateType, boolean>(state => state.auth.isLoading);
 
     useEffect(() => {
+        if (!isLoading) {
+            return
+        }
         dispatch(setTodolistTC());
     }, []);
 
@@ -74,6 +81,10 @@ export const TodolistsList = () => {
         // dispatch(changeTitleTodolistAC(title, todolistId));
         dispatch(changeTodolistTitleTC(title, todolistId));
     }, [dispatch]);
+
+    if (!isLoading) {
+        return <Redirect to={'/login'}/>
+    }
 
     return (
         <div>

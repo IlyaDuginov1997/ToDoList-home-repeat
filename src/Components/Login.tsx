@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -8,6 +8,10 @@ import FormLabel from '@mui/material/FormLabel';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from 'formik';
+import {useDispatch, useSelector} from 'react-redux';
+import {checkIsLogedInTC, setIsLogedInTC} from '../Redux-store/AuthReducer/auth-reducer';
+import {AppRootStateType} from '../Redux-store/Store';
+import {Redirect} from 'react-router-dom';
 
 export type FormikValuesType = {
     email?: string
@@ -17,6 +21,8 @@ export type FormikValuesType = {
 
 export const Login = () => {
 
+    const dispatch = useDispatch();
+    const isLoading = useSelector<AppRootStateType, boolean>(state => state.auth.isLoading);
 
     const formik = useFormik({
         initialValues: {
@@ -36,11 +42,15 @@ export const Login = () => {
             return errors;
         },
         onSubmit: (values) => {
-            alert(JSON.stringify(values, null, 2))
-            formik.resetForm();
+            dispatch(setIsLogedInTC({...values, captcha: true}));
+            // console.log({...values,captcha: true})
+            // alert('Yo')
+            // formik.resetForm();
         }
     });
-
+    if (isLoading) {
+        return <Redirect to={'/'}/>
+    }
 
     return <Grid container justifyContent={'center'}>
         <Grid item justifyContent={'center'}>
