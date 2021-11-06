@@ -147,7 +147,7 @@ export const loginAPI = {
             });
     },
     me() {
-        return instance.get<CommonTodolistType>('auth/me')
+        return instance.get<CommonTodolistType<{id: number, email: string, login: string}>>('auth/me')
             .then(res => {
                 return res.data;
             });

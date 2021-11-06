@@ -1,24 +1,19 @@
-import {addTaskAC} from './auth-reducer';
-import {TasksType} from '../../Components/TodolistsList';
-import {TaskPriorities, TaskStatuses} from '../../API/todolists-api';
+import {authReducer, checkIsAuthorized, InitialStateType, setIsLoggedIn} from './auth-reducer';
 
-let startState: TasksType = {};
+let startState: InitialStateType;
 beforeEach(() => {
-        startState = {};
-    }
-);
-
-test('new task will be added', () => {
-    let newTask = {
-        id: '4', status: TaskStatuses.New, title: 'Beer', addedDate: '', order: 0, deadline: '',
-        description: '', priority: TaskPriorities.Hi, startDate: '', todoListId: 'todolistId2'
+    startState = {
+        isLogged: false,
+        isAuthorized: false,
     };
+});
 
-    // const endState = taskReducer(startState, addTaskAC(newTask));
+test('logged condition should be changed', () => {
+    const endState = authReducer(startState, setIsLoggedIn(true));
+    expect(endState.isLogged).toBeTruthy()
+});
 
-    // expect(endState['todolistId1'].length).toBe(3);
-    // expect(endState['todolistId2'].length).toBe(4);
-    // expect(endState['todolistId2'][0].title).toBe('Beer');
-    // expect(endState['todolistId2'][0].status).toBe(TaskStatuses.New);
-    // expect(endState['todolistId2'][0].id).toBeDefined();
+test('authorization should be established', () => {
+    const endState = authReducer(startState, checkIsAuthorized(true));
+    expect(endState.isAuthorized).toBeTruthy()
 });

@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import {useFormik} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
-import {checkIsLogedInTC, setIsLogedInTC} from '../Redux-store/AuthReducer/auth-reducer';
+import {setIsLoggedInTC} from '../Redux-store/AuthReducer/auth-reducer';
 import {AppRootStateType} from '../Redux-store/Store';
 import {Redirect} from 'react-router-dom';
 
@@ -22,7 +22,7 @@ export type FormikValuesType = {
 export const Login = () => {
 
     const dispatch = useDispatch();
-    const isLoading = useSelector<AppRootStateType, boolean>(state => state.auth.isLoading);
+    const isLogged = useSelector<AppRootStateType, boolean>(state => state.auth.isLogged);
 
     const formik = useFormik({
         initialValues: {
@@ -42,13 +42,11 @@ export const Login = () => {
             return errors;
         },
         onSubmit: (values) => {
-            dispatch(setIsLogedInTC({...values, captcha: true}));
-            // console.log({...values,captcha: true})
-            // alert('Yo')
-            // formik.resetForm();
+            dispatch(setIsLoggedInTC({...values, captcha: true}));
+            formik.resetForm();
         }
     });
-    if (isLoading) {
+    if (isLogged) {
         return <Redirect to={'/'}/>
     }
 

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -11,19 +12,25 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from '../Redux-store/Store';
 import {RequestStatusType} from '../Redux-store/AppReducer/app-reducer';
 import {ErrorAlert} from './ErrorAlert';
-import { Login } from './Login';
-import {Redirect, Route, Switch } from 'react-router-dom';
-import {useEffect} from 'react';
-import {checkIsLogedInTC} from '../Redux-store/AuthReducer/auth-reducer';
+import {Login} from './Login';
+import {Redirect, Route, Switch} from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
+import {checkIsAuthorizedTC} from '../Redux-store/AuthReducer/auth-reducer';
 
 export function AppWithRedux() {
-    debugger
     const dispatch = useDispatch()
     const statusPreloader = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
+    const isAuthorized = useSelector<AppRootStateType, boolean>(state => state.auth.isAuthorized);
 
     useEffect(() => {
-        dispatch(checkIsLogedInTC())
+        dispatch(checkIsAuthorizedTC())
     }, []);
+
+    if(!isAuthorized) {
+        return <div  style={{position: 'fixed', textAlign: 'center', width: '100%', top: '30%'}}>
+            <CircularProgress/>
+        </div>
+    }
 
     return (
         <div className="App">
