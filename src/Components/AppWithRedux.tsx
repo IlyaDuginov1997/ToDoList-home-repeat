@@ -15,12 +15,13 @@ import {ErrorAlert} from './ErrorAlert';
 import {Login} from './Login';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
-import {checkIsAuthorizedTC} from '../Redux-store/AuthReducer/auth-reducer';
+import {checkIsAuthorizedTC, setIsLoggedOutTC} from '../Redux-store/AuthReducer/auth-reducer';
 
 export function AppWithRedux() {
     const dispatch = useDispatch()
     const statusPreloader = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status);
     const isAuthorized = useSelector<AppRootStateType, boolean>(state => state.auth.isAuthorized);
+    const isLogged = useSelector<AppRootStateType, boolean>(state => state.auth.isLogged);
 
     useEffect(() => {
         dispatch(checkIsAuthorizedTC())
@@ -30,6 +31,10 @@ export function AppWithRedux() {
         return <div  style={{position: 'fixed', textAlign: 'center', width: '100%', top: '30%'}}>
             <CircularProgress/>
         </div>
+    }
+
+    const logout = () => {
+        dispatch(setIsLoggedOutTC())
     }
 
     return (
@@ -49,7 +54,7 @@ export function AppWithRedux() {
                     <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                         News
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
                 </Toolbar>
             </AppBar>
             {statusPreloader === 'loading' && <StatusPreloader/>}

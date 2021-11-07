@@ -146,6 +146,12 @@ export const loginAPI = {
                 return res.data;
             });
     },
+    logout() {
+        return instance.delete<CommonTodolistType>('auth/login')
+            .then(res => {
+                return res.data;
+            });
+    },
     me() {
         return instance.get<CommonTodolistType<{id: number, email: string, login: string}>>('auth/me')
             .then(res => {

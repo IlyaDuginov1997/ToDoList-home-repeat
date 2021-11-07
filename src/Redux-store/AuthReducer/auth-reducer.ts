@@ -65,6 +65,26 @@ export const setIsLoggedInTC = (loginParams: LoginParamsType) => {
     };
 };
 
+export const setIsLoggedOutTC = () => {
+    return (dispatch: authReducerThunkDispatch) => {
+        dispatch(setAppStatus('loading'));
+        loginAPI.logout()
+            .then(res => {
+                if (res.resultCode === 0) {
+                    dispatch(setIsLoggedIn(false));
+                    dispatch(setAppStatus('succeeded'));
+                } else {
+                    // util helper-function
+                    handlerServerAppError(res, dispatch);
+                }
+            })
+            .catch(err => {
+                // util helper-function
+                handlerServerNetworkError(err, dispatch);
+            });
+    };
+};
+
 export const checkIsAuthorizedTC = () => {
     return (dispatch: authReducerThunkDispatch) => {
         loginAPI.me()
