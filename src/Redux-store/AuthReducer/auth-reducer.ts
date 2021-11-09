@@ -3,6 +3,7 @@ import {loginAPI, LoginParamsType} from '../../API/todolists-api';
 import {Dispatch} from 'redux';
 import {setAppError, setAppStatus} from '../AppReducer/app-reducer';
 import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type AllTasksTypes =
     ReturnType<typeof setIsLoggedIn> |
@@ -14,45 +15,30 @@ const initialState = {
 };
 export type InitialStateType = typeof initialState
 
-export const authReducer = (state: InitialStateType = initialState, action: AllTasksTypes): InitialStateType => {
-    switch (action.type) {
-        case 'LOGIN/SET-IS-LOGGED-IN':
-            return {
-                ...state,
-                isLogged: action.isLogged,
-            };
-        case 'LOGIN/CHECK-IS-AUTHORIZED':
-            return {
-                ...state,
-                isAuthorized: action.isAuthorized,
-            };
-        default:
-            return state;
+const slice = createSlice({
+    name: 'auth',
+    initialState: initialState,
+    reducers: {
+        setIsLoggedIn(state, action: PayloadAction<{isLogged: boolean}>) {
+            state.isLogged = action.payload.isLogged
+        },
+        checkIsAuthorized(state, action: PayloadAction<{isAuthorized: boolean}>) {
+            state.isAuthorized = action.payload.isAuthorized
+        }
     }
-};
+})
 
-export const setIsLoggedIn = (isLogged: boolean) => {
-    return {
-        type: 'LOGIN/SET-IS-LOGGED-IN',
-        isLogged
-    } as const;
-};
-
-export const checkIsAuthorized = (isAuthorized: boolean) => {
-    return {
-        type: 'LOGIN/CHECK-IS-AUTHORIZED',
-        isAuthorized
-    } as const;
-};
+export const {setIsLoggedIn, checkIsAuthorized} = slice.actions
+export const authReducer = slice.reducer
 
 export const setIsLoggedInTC = (loginParams: LoginParamsType) => {
     return (dispatch: authReducerThunkDispatch) => {
-        dispatch(setAppStatus('loading'));
+        dispatch(setAppStatus({status: 'loading'}));
         loginAPI.login(loginParams)
             .then(res => {
                 if (res.resultCode === 0) {
-                    dispatch(setIsLoggedIn(true));
-                    dispatch(setAppStatus('succeeded'));
+                    dispatch(setIsLoggedIn({isLogged: true}));
+                    dispatch(setAppStatus({status: 'succeeded'}));
                 } else {
                     // util helper-function
                     handlerServerAppError(res, dispatch);
@@ -67,12 +53,12 @@ export const setIsLoggedInTC = (loginParams: LoginParamsType) => {
 
 export const setIsLoggedOutTC = () => {
     return (dispatch: authReducerThunkDispatch) => {
-        dispatch(setAppStatus('loading'));
+        dispatch(setAppStatus({status: 'loading'}));
         loginAPI.logout()
             .then(res => {
                 if (res.resultCode === 0) {
-                    dispatch(setIsLoggedIn(false));
-                    dispatch(setAppStatus('succeeded'));
+                    dispatch(setIsLoggedIn({isLogged: false}));
+                    dispatch(setAppStatus({status: 'succeeded'}));
                 } else {
                     // util helper-function
                     handlerServerAppError(res, dispatch);
@@ -90,9 +76,9 @@ export const checkIsAuthorizedTC = () => {
         loginAPI.me()
             .then(res => {
                 if (res.resultCode === 0) {
-                    dispatch(setIsLoggedIn(true));
+                    dispatch(setIsLoggedIn({isLogged: true}));
                 }
-                dispatch(checkIsAuthorized(true));
+                dispatch(checkIsAuthorized({isAuthorized: true}));
             })
             .catch(err => {
                 // util helper-function

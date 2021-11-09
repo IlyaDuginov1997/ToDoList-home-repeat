@@ -9,11 +9,11 @@ beforeEach(() => {
 });
 
 test('logged condition should be changed', () => {
-    const endState = authReducer(startState, setIsLoggedIn(true));
+    const endState = authReducer(startState, setIsLoggedIn({isLogged: true}));
     expect(endState.isLogged).toBeTruthy()
 });
 
 test('authorization should be established', () => {
-    const endState = authReducer(startState, checkIsAuthorized(true));
+    const endState = authReducer(startState, checkIsAuthorized({isAuthorized: true}));
     expect(endState.isAuthorized).toBeTruthy()
 });

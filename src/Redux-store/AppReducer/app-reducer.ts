@@ -1,3 +1,5 @@
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
 
 export type AppPreloaderStateType = {
@@ -13,33 +15,50 @@ const initialState: AppPreloaderStateType = {
     error: null,
 };
 
-export const appReducer = (state: AppPreloaderStateType = initialState, action: AppTypes): AppPreloaderStateType => {
-    switch (action.type) {
-        case 'APP/SET-STATUS':
-            return {
-                ...state,
-                status: action.status
-            };
-        case 'APP/SET-ERROR':
-            return {
-                ...state,
-                error: action.error
-            };
-        default:
-            return state;
+const slice = createSlice({
+    name: 'app',
+    initialState: initialState,
+    reducers: {
+        setAppStatus(state, action: PayloadAction<{status: RequestStatusType}>) {
+            state.status = action.payload.status
+        },
+        setAppError(state, action: PayloadAction<{error: string | null}>) {
+            state.error = action.payload.error
+        }
     }
-};
+})
 
-export const setAppStatus = (status: RequestStatusType) => {
-    return {
-        type: 'APP/SET-STATUS',
-        status,
-    } as const;
-};
+export const appReducer = slice.reducer
+export const {setAppStatus, setAppError} = slice.actions
 
-export const setAppError = (error: string | null) => {
-    return {
-        type: 'APP/SET-ERROR',
-        error,
-    } as const;
-};
+//
+// export const appReducer = (state: AppPreloaderStateType = initialState, action: AppTypes): AppPreloaderStateType => {
+//     switch (action.type) {
+//         case 'APP/SET-STATUS':
+//             return {
+//                 ...state,
+//                 status: action.status
+//             };
+//         case 'APP/SET-ERROR':
+//             return {
+//                 ...state,
+//                 error: action.error
+//             };
+//         default:
+//             return state;
+//     }
+// };
+
+// export const setAppStatus = (status: RequestStatusType) => {
+//     return {
+//         type: 'APP/SET-STATUS',
+//         status,
+//     } as const;
+// };
+//
+// export const setAppError = (error: string | null) => {
+//     return {
+//         type: 'APP/SET-ERROR',
+//         error,
+//     } as const;
+// };

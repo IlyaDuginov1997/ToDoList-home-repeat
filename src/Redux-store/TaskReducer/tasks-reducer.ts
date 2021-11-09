@@ -10,6 +10,7 @@ import {Dispatch} from 'redux';
 import {AppRootStateType} from '../Store';
 import {setAppError, setAppStatus} from '../AppReducer/app-reducer';
 import {handlerServerAppError, handlerServerNetworkError} from '../../Helep-functions/error-utils';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 export type AllTasksTypes = AddTaskType
     | RemoveTaskType
@@ -27,10 +28,21 @@ export type ChangeTaskStatusType = ReturnType<typeof changeTaskStatusAC>
 export type SetTasksType = ReturnType<typeof setTasksAC>
 
 
-// export type TaskDomainType = TasksType & {
-//     taskEntityStatus: RequestStatusType
-// }
 const initialState: TasksType = {};
+
+// const slice = createSlice({
+//     name: 'tasks',
+//     initialState: initialState,
+//     reducers: {
+//         addTaskAC(state, action: PayloadAction<{ task: TaskType }>) {
+//             const newTask: TaskType = {...action.payload.task};
+//
+//             [action.payload.task.todoListId] = [newTask, ...state[action.payload.task.todoListId]];
+//         }
+//     }
+// });
+
+// export const taskReducer = slice.reducer;
 
 export const taskReducer = (state: TasksType = initialState, action: AllTasksTypes): TasksType => {
     switch (action.type) {
@@ -140,15 +152,15 @@ export const setTasksAC = (tasks: TaskType[], todolistId: string) => {
 
 export const setTaskTC = (todolistId: string) => {
     return (dispatch: taskReducerThunkDispatch) => {
-        dispatch(setAppStatus('loading'));
+        dispatch(setAppStatus({status: 'loading'}));
         todolistsAPI.getTodolistTasks(todolistId)
             .then(res => {
                 dispatch(setTasksAC(res.items, todolistId));
-                dispatch(setAppStatus('succeeded'));
+                dispatch(setAppStatus({status: 'succeeded'}));
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -156,15 +168,15 @@ export const setTaskTC = (todolistId: string) => {
 
 export const removeTaskTC = (taskId: string, todolistId: string) => {
     return (dispatch: taskReducerThunkDispatch) => {
-        dispatch(setAppStatus('loading'));
+        dispatch(setAppStatus({status: 'loading'}));
         todolistsAPI.deleteTodolistTask(todolistId, taskId)
             .then(res => {
                 dispatch(removeTaskAC(taskId, todolistId));
-                dispatch(setAppStatus('succeeded'));
+                dispatch(setAppStatus({status: 'succeeded'}));
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -172,12 +184,12 @@ export const removeTaskTC = (taskId: string, todolistId: string) => {
 
 export const addTaskTC = (title: string, todolistId: string) => {
     return (dispatch: taskReducerThunkDispatch) => {
-        dispatch(setAppStatus('loading'));
+        dispatch(setAppStatus({status: 'loading'}));
         todolistsAPI.createTodolistTask(todolistId, title)
             .then(res => {
                 if (res.resultCode === 0) {
                     dispatch(addTaskAC(res.data.item));
-                    dispatch(setAppStatus('succeeded'));
+                    dispatch(setAppStatus({status: 'succeeded'}));
                     dispatch(setTodolistStatus('succeeded', todolistId));
                 } else {
                     // util helper-function
@@ -186,7 +198,7 @@ export const addTaskTC = (title: string, todolistId: string) => {
             })
             .catch(err => {
                 // util helper-function
-                handlerServerNetworkError(err, dispatch)
+                handlerServerNetworkError(err, dispatch);
             });
     };
 };
@@ -197,7 +209,7 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
         const allTasks = getState().tasks;
         const task = allTasks[todolistId].find((t) => t.id === taskId);
         if (task) {
-            dispatch(setAppStatus('loading'));
+            dispatch(setAppStatus({status: 'loading'}));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title: task.title,
                 description: task.description,
@@ -208,11 +220,11 @@ export const changeTaskStatusTC = (taskId: string, status: TaskStatuses, todolis
             })
                 .then(res => {
                     dispatch(changeTaskStatusAC(taskId, status, todolistId));
-                    dispatch(setAppStatus('succeeded'));
+                    dispatch(setAppStatus({status: 'succeeded'}));
                 })
                 .catch(err => {
                     // util helper-function
-                    handlerServerNetworkError(err, dispatch)
+                    handlerServerNetworkError(err, dispatch);
                 });
         }
     };
@@ -228,7 +240,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
             }
         });
         if (ourTask) {
-            dispatch(setAppStatus('loading'));
+            dispatch(setAppStatus({status: 'loading'}));
             todolistsAPI.updateTodolistTask(todolistId, taskId, {
                 title,
                 description: ourTask.description,
@@ -240,7 +252,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
                 .then(res => {
                     if (res.resultCode === 0) {
                         dispatch(changeTaskTitleAC(title, todolistId, taskId));
-                        dispatch(setAppStatus('succeeded'));
+                        dispatch(setAppStatus({status: 'succeeded'}));
                     } else {
                         // util helper-function
                         handlerServerAppError(res, dispatch);
@@ -248,7 +260,7 @@ export const changeTaskTitleTC = (title: string, taskId: string, todolistId: str
                 })
                 .catch(err => {
                     // util helper-function
-                    handlerServerNetworkError(err, dispatch)
+                    handlerServerNetworkError(err, dispatch);
                 });
         }
     };

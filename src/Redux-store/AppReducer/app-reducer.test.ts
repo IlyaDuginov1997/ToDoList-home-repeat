@@ -10,12 +10,12 @@ beforeEach(() => {
 );
 
 test('status should be failed', () => {
-    const endState = appReducer(startState, setAppStatus('failed'));
+    const endState = appReducer(startState, setAppStatus({status: 'failed'}));
     expect(endState.status).toBe('failed');
 });
 
 test('error should be setted', () => {
-    const endState = appReducer(startState, setAppError('some troubles'));
+    const endState = appReducer(startState, setAppError({error: 'some troubles'}));
     expect(startState.error).toBe(null);
     expect(endState.error).toBe('some troubles');
 });
