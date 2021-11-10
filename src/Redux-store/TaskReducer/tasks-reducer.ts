@@ -1,6 +1,7 @@
 import {
-    AddTodolistType,
-    RemoveTodolistType,
+    addTodolistAC,
+    AddTodolistType, removeTodolistAC,
+    RemoveTodolistType, setTodolistsAC,
     setTodolistStatus,
     SetTodolistsType
 } from '../TodolistReducer/todolist-reducer';
@@ -44,7 +45,7 @@ const initialState: TasksType = {};
 
 // export const taskReducer = slice.reducer;
 
-export const taskReducer = (state: TasksType = initialState, action: AllTasksTypes): TasksType => {
+export const taskReducer = (state: TasksType = initialState, action: any): TasksType => {
     switch (action.type) {
         case 'ADD-TASK':
             const newTask: TaskType = {...action.task};
@@ -82,22 +83,20 @@ export const taskReducer = (state: TasksType = initialState, action: AllTasksTyp
                 [action.todolistId]: action.tasks
             };
 
-
-        case 'ADD-TODOLIST':
+        case addTodolistAC.type:
             return {
                 ...state,
-                [action.todolist.id]: []
+                [action.payload.todolist.id]: []
             };
 
-        case 'REMOVE-TODOLIST':
+        case removeTodolistAC.type:
             let stateCopy = {...state};
-            delete stateCopy[action.todolistId];
+            delete stateCopy[action.payload.todolistId];
             return stateCopy;
 
-        case 'SET-TODOLISTS':
+        case setTodolistsAC.type:
             const copyState = {...state};
-
-            action.todolists.forEach(t => {
+            action.payload.todolists.forEach((t: any) => {
                 copyState[t.id] = [];
             });
 
@@ -190,7 +189,7 @@ export const addTaskTC = (title: string, todolistId: string) => {
                 if (res.resultCode === 0) {
                     dispatch(addTaskAC(res.data.item));
                     dispatch(setAppStatus({status: 'succeeded'}));
-                    dispatch(setTodolistStatus('succeeded', todolistId));
+                    dispatch(setTodolistStatus({todolistEntityStatus: 'succeeded', todolistId}));
                 } else {
                     // util helper-function
                     handlerServerAppError(res, dispatch);

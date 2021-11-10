@@ -71,7 +71,7 @@ export const TodolistsList = () => {
     }, [dispatch]);
 
     const changeTodolistFilter = useCallback((filter: FilterType, todolistId: string) => {
-        dispatch(changeFilterTodolistAC(filter, todolistId));
+        dispatch(changeFilterTodolistAC({filter, todolistId}));
     }, [dispatch]);
 
     const changeTodolistTitle = useCallback((title: string, todolistId: string) => {
