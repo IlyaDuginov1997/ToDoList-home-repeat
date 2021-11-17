@@ -58,24 +58,26 @@ export function AppWithReducers() {
     );
 
     const addTask = (title: string, todolistId: string) => {
-        dispatchToTasks(addTaskAC({
-            id: '1', status: TaskStatuses.Completed, title, addedDate: '', order: 0, deadline: '',
-            description: '', priority: TaskPriorities.Hi, startDate: '', todoListId: todolistId
-        }));
+        dispatchToTasks(addTaskAC({task: {
+                    id: '1', status: TaskStatuses.Completed, title, addedDate: '', order: 0, deadline: '',
+                    description: '', priority: TaskPriorities.Hi, startDate: '', todoListId: todolistId
+                }
+            }
+            ));
     };
 
 
     const removeTask = (taskId: string, todolistId: string) => {
-        dispatchToTasks(removeTaskAC(taskId, todolistId));
+        dispatchToTasks(removeTaskAC({taskId, todolistId}));
     };
 
     const changeStatus = (taskId: string, status: TaskStatuses, todolistId: string) => {
-        dispatchToTasks(changeTaskStatusAC(taskId, status, todolistId));
+        dispatchToTasks(changeTaskStatusAC({taskId, status, todolistId}));
 
     };
 
     const changeTaskTitle = (title: string, todolistId: string, taskId: string) => {
-        dispatchToTasks(changeTaskTitleAC(title, todolistId, taskId));
+        dispatchToTasks(changeTaskTitleAC({title, todolistId, taskId}));
 
     };
 
